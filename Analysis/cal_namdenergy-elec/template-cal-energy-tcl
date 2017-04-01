@@ -1,0 +1,20 @@
+set psfname [lindex $argv 0]
+set dcdname [lindex $argv 1]
+
+mol new $psfname
+mol addfile $dcdname waitfor all
+
+package require namdenergy
+
+foreach {seg1 seg2} {SEQ} {
+    foreach seltext1 {TEXT1} {
+        foreach seltext2 {TEXT2} {
+
+            set sel1 [atomselect top "segname P${seg1} and resid ${seltext1}"]
+            set sel2 [atomselect top "segname P${seg2} and resid ${seltext2}"]
+            
+            namdenergy -elec -vdw -nonb -sel $sel1 $sel2 -ofile "output/ener-P${seg1}-P${seg2}-res${seltext1}-res${seltext2}.dat" -switch 11 -cutoff 13 -par ../par_all36_prot.prm -exe /home/kevin/opt/NAMD_2.10_Linux-x86_64/namd2
+        }
+    }
+}
+quit

@@ -1,0 +1,3 @@
+filelist=system("ls -t pmf-65-{80,90,100,115}-400.xvg")
+set key outside
+plot for [filename in filelist] filename using 1:2 title sprintf(filename) with l

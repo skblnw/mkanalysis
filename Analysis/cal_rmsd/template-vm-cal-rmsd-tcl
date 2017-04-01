@@ -1,0 +1,23 @@
+set psfname [lindex $argv 0]
+set pdbname [lindex $argv 1]
+set dcdname [lindex $argv 2]
+set outname [lindex $argv 3]
+
+set mol [mol new $psfname waitfor all]
+if { $pdbname != 0 } {
+    mol addfile $pdbname waitfor all}
+mol addfile $dcdname waitfor all
+
+set num_frames [molinfo $mol get numframes]
+set ref_struct [atomselect top "SELTEXT" frame 0]
+set sel [atomselect top "SELTEXT"]
+set outfile [open "rmsd_${outname}.dat" "w"]
+for {set i 0} {$i<$num_frames} {incr i} {
+    $sel frame $i
+    $sel move [measure fit $sel $ref_struct]
+    set rmsd1 [measure rmsd $sel $ref_struct]
+    puts $outfile "$i \t $rmsd1 "
+}
+close $outfile
+
+quit
