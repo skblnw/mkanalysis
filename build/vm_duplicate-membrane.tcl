@@ -2,6 +2,7 @@
 ## Description: Duplicate small membranes to create large ones
 ## Author: Kev Dec 2016
 #########################################
+
 # Assuming your membrane is square in shape
 # Usually it requires you to run an equilibrated run of the membrane first
 # Then from the xsc file, you will have the boxsize (same for x and y)
