@@ -1,4 +1,4 @@
-set filename ../combine/system
+set filename ../system
 package require solvate
 solvate $filename.psf $filename.pdb -b 2.4 -minmax {{-146 -72 -55} {146 72 115}} -o solvate_TEMP
 mol new solvate_TEMP.psf

@@ -1,4 +1,4 @@
-set seltext {not {water or ion}}
+set seltext {protein or segname "L.*" "W." ION or {segname "WT.*" and name OH2 and within 10 of protein}}
 set outname "noW"
 
 mol new ../../../ionized.psf

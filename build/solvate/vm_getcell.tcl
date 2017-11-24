@@ -11,6 +11,6 @@ proc get_cell {{molid top}} {
  $all delete 
 }
 
-mol new ../combine/system.pdb
+mol new ../system.pdb
 get_cell
 quit

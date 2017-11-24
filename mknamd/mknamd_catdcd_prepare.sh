@@ -37,4 +37,4 @@ read -p "Name of the index-XXX.txt? [noW] " ind
 stride=$(( $ps / $ps2 ))
 echo -e "The stride is $stride"
 cd $SRC_DIR
-catdcd -o $OUTPUT_DIR/preparation-pf${ps}ps.dcd -i $OUTPUT_DIR/index-$ind.txt -stride $stride mini-*.dcd heat.dcd pre-npt.dcd cons-{50,30,10,5,3,1}.dcd
+catdcd -o $OUTPUT_DIR/preparation-pf${ps}ps.dcd -i $OUTPUT_DIR/index-$ind.txt -stride $stride mini-*.dcd heat.dcd
