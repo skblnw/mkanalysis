@@ -53,6 +53,10 @@ EOF
 	
     # Add render scripts
     cat >> $WRAPPER_NAME << EOF
+light 0 on
+light 1 off
+light 2 off
+light 3 off
 display shadows on
 display resize 1920 1080
 display ambientocclusion on
