@@ -53,6 +53,7 @@ EOF
 	
     # Add render scripts
     cat >> $WRAPPER_NAME << EOF
+axes location off
 light 0 on
 light 1 off
 light 2 off
@@ -60,8 +61,9 @@ light 3 off
 display shadows on
 display resize 1920 1080
 display ambientocclusion on
-display aoambient 0.80
-display aodirect 0.60
+display aoambient 0.50
+display aodirect 0.50
+display update
 
 set outdir1 $OUTPUT_DIR1
 set outdir2 $OUTPUT_DIR2
@@ -72,6 +74,8 @@ for {set ii 18} {\$ii < \$nf} {incr ii 1} {
         set filename snap_[format "%04d" [expr \$ii]]
         render aasamples TachyonLOSPRayInternal 12
         render TachyonLOSPRayInternal \$outdir1/\$filename.tga
+        #render aasamples TachyonInternal 12
+        #render TachyonInternal \$outdir1/\$filename.tga
         puts "From \$outdir1/\$filename.tga"
         puts "To \$outdir2/\$filename.jpg"
         # Convert tga to jpg using ImageMagick convert
@@ -79,7 +83,7 @@ for {set ii 18} {\$ii < \$nf} {incr ii 1} {
 }
 EOF
 
-    dos2unix $WRAPPER_NAME
+    #dos2unix $WRAPPER_NAME
 
     # Main rendering process
     cd $DCD_DIR

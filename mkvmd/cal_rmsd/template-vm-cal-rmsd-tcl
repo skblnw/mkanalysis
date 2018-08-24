@@ -9,14 +9,19 @@ if { $pdbname != 0 } {
 mol addfile $dcdname waitfor all
 
 set num_frames [molinfo $mol get numframes]
-set ref_struct [atomselect top "SELTEXT" frame 0]
-set sel [atomselect top "SELTEXT"]
+set sel_all [atomselect top all]
+set sel_ref0 [atomselect top "SELREF" frame 0]
+set sel_ref [atomselect top "SELREF"]
+set sel_rmsd0 [atomselect top "SELRMSD" frame 0]
+set sel_rmsd [atomselect top "SELRMSD"]
 set outfile [open "rmsd_${outname}.dat" "w"]
 for {set i 0} {$i<$num_frames} {incr i} {
-    $sel frame $i
-    $sel move [measure fit $sel $ref_struct]
-    set rmsd1 [measure rmsd $sel $ref_struct]
-    puts $outfile "$i \t $rmsd1 "
+    $sel_all frame $i
+    $sel_ref frame $i
+    $sel_rmsd frame $i
+    $sel_all move [measure fit $sel_ref $sel_ref0]
+    set rmsd [measure rmsd $sel_rmsd $sel_rmsd0]
+    puts $outfile "$i \t $rmsd"
 }
 close $outfile
 

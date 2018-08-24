@@ -2,9 +2,11 @@ clear;
 clc;
 
 filename = [''];
-data=load(filename);
-psperframe=100;
-data(:,1)=data(:,1)*psperframe/1000;
+% data=load(filename);
+% filename = ['',num2str(i), ''];
+fileID = fopen(filename);
+formatSpec = '%s %f';
+data = textscan(fileID, formatSpec, 'CommentStyle', {'#' ,'@' }, 'HeaderLines', 0);
 % For excluding data
 % frame_start=850;
 % data(frame_start:end,:)=[];
