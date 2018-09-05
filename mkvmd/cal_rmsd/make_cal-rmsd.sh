@@ -6,7 +6,6 @@
 PSF=../../pdb2gmx/prot.pdb
 PDB=0
 DCD=/home/PHARMACY/chan.773/storage/cpf1/run_noDNA/md-1-80-pf100ps-fit.xtc
-#SELREF=("protein and resid 725 to 1075")
 SELREF=("protein and resid 940 to 990")
 SELRMSD=("protein and resid 790 to 860")
 OUTPUT_NAME=("r790-860")
