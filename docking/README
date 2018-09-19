@@ -1,0 +1,5 @@
+1. find -name "*.dlg" > namelist
+2. make_combine.sh
+3. make_res.sh
+4. find -name "out.contact" > namelist
+4. make_reslist.py

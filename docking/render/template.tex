@@ -1,0 +1,409 @@
+\documentclass[prl,onecolumn,notitlepage,longbibliography,amsmath,floatfix]{article}
+%\documentclass[prl,onecolumn,notitlepage,longbibliography,secnumarabic,nobalancelastpage,amsmath,amssymb]{revtex4-1}
+
+%\usepackage{natbib}
+\usepackage{color}         % produces boxes or entire pages with colored backgrounds
+\usepackage{graphicx}      % alternative graphics specifications
+\usepackage{multirow}
+%\usepackage{subcaption}
+\usepackage{subfig}
+%\usepackage{graphics}      % standard graphics specifications
+%\usepackage{epsf}          % old package handles encapsulated post script issues
+%\usepackage{bm}            % special 'bold-math' package
+%\usepackage{thumbpdf}
+\usepackage[margin=0.8in]{geometry}
+\usepackage{lipsum}
+\usepackage{fancyhdr}
+\usepackage{datetime}
+
+\fancyhf{}
+\fancyhead[L]{Kevin}
+\fancyhead[R]{\today}
+\pagestyle{fancy}
+
+
+%%%%% To left-align the captions %%%%%%%
+%\usepackage{ragged2e}
+%\DeclareCaptionJustification{justified}{\justifying}
+%\captionsetup{justification=justified,singlelinecheck=false,labelfont=large}
+%%%%% To left-align the captions %%%%%%%
+
+\usepackage[colorlinks=true]{hyperref}  % this package should be added after all others
+                                        % use as follows: \url{http://web.mit.edu/8.13}
+
+% Interesting packages from the web
+\usepackage{array}  % for creating \rowstyle which could change the style of entire row of a table
+\newcolumntype{$}{>{\global\let\currentrowstyle\relax}}
+\newcolumntype{^}{>{\currentrowstyle}}
+\newcommand{\rowstyle}[1]{\gdef\currentrowstyle{#1}%
+  #1\ignorespaces
+}
+
+
+%
+% And now, begin the document...
+%
+
+\begin{document}
+\title{}
+\author{Kevin}
+\date{\today}
+%\maketitle
+
+%\begin{abstract}
+%\end{abstract}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{What has been since the last report}
+%Some Text
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Results}
+lalala
+
+%Add figures here
+\begin{figure*}
+
+\setlength{\lineskip}{1ex}
+
+\subfloat[ZINC85628589 (-14.96)]{\includegraphics[width=0.4\textwidth]{ZINC85628589.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487853 (-14.67)]{\includegraphics[width=0.4\textwidth]{ZINC85487853.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85543440 (-13.91)]{\includegraphics[width=0.4\textwidth]{ZINC85543440.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487821 (-13.81)]{\includegraphics[width=0.4\textwidth]{ZINC85487821.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85594001 (-13.75)]{\includegraphics[width=0.4\textwidth]{ZINC85594001.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85594026 (-13.68)]{\includegraphics[width=0.4\textwidth]{ZINC85594026.jpg}}
+\hspace{.125\textwidth}
+
+\end{figure*}
+
+\begin{figure*}
+
+\setlength{\lineskip}{1ex}
+
+\subfloat[ZINC85628052 (-13.64)]{\includegraphics[width=0.4\textwidth]{ZINC85628052.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487919 (-13.62)]{\includegraphics[width=0.4\textwidth]{ZINC85487919.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85542806 (-13.59)]{\includegraphics[width=0.4\textwidth]{ZINC85542806.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85542773 (-13.42)]{\includegraphics[width=0.4\textwidth]{ZINC85542773.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85542795 (-13.41)]{\includegraphics[width=0.4\textwidth]{ZINC85542795.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85627817 (-13.37)]{\includegraphics[width=0.4\textwidth]{ZINC85627817.jpg}}
+\hspace{.125\textwidth}
+
+\end{figure*}
+
+\begin{figure*}
+
+\setlength{\lineskip}{1ex}
+
+\subfloat[ZINC85594053 (-13.29)]{\includegraphics[width=0.4\textwidth]{ZINC85594053.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487863 (-13.27)]{\includegraphics[width=0.4\textwidth]{ZINC85487863.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85594055 (-13.23)]{\includegraphics[width=0.4\textwidth]{ZINC85594055.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85594003 (-13.22)]{\includegraphics[width=0.4\textwidth]{ZINC85594003.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487818 (-13.22)]{\includegraphics[width=0.4\textwidth]{ZINC85487818.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85542935 (-13.21)]{\includegraphics[width=0.4\textwidth]{ZINC85542935.jpg}}
+\hspace{.125\textwidth}
+
+\end{figure*}
+
+\begin{figure*}
+
+\setlength{\lineskip}{1ex}
+
+\subfloat[ZINC85542850 (-13.07)]{\includegraphics[width=0.4\textwidth]{ZINC85542850.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85594051 (-13.06)]{\includegraphics[width=0.4\textwidth]{ZINC85594051.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487842 (-13.03)]{\includegraphics[width=0.4\textwidth]{ZINC85487842.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85543453 (-13.03)]{\includegraphics[width=0.4\textwidth]{ZINC85543453.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487795 (-13.01)]{\includegraphics[width=0.4\textwidth]{ZINC85487795.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85594080 (-13.01)]{\includegraphics[width=0.4\textwidth]{ZINC85594080.jpg}}
+\hspace{.125\textwidth}
+
+\end{figure*}
+
+\begin{figure*}
+
+\setlength{\lineskip}{1ex}
+
+\subfloat[ZINC85487866 (-13.01)]{\includegraphics[width=0.4\textwidth]{ZINC85487866.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85627969 (-12.99)]{\includegraphics[width=0.4\textwidth]{ZINC85627969.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85627778 (-12.99)]{\includegraphics[width=0.4\textwidth]{ZINC85627778.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85634021 (-12.97)]{\includegraphics[width=0.4\textwidth]{ZINC85634021.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85594024 (-12.97)]{\includegraphics[width=0.4\textwidth]{ZINC85594024.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487858 (-12.97)]{\includegraphics[width=0.4\textwidth]{ZINC85487858.jpg}}
+\hspace{.125\textwidth}
+
+\end{figure*}
+
+\begin{figure*}
+
+\setlength{\lineskip}{1ex}
+
+\subfloat[ZINC85542617 (-12.96)]{\includegraphics[width=0.4\textwidth]{ZINC85542617.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85571260 (-12.94)]{\includegraphics[width=0.4\textwidth]{ZINC85571260.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85542870 (-12.94)]{\includegraphics[width=0.4\textwidth]{ZINC85542870.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85571273 (-12.93)]{\includegraphics[width=0.4\textwidth]{ZINC85571273.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85571271 (-12.93)]{\includegraphics[width=0.4\textwidth]{ZINC85571271.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85594070 (-12.92)]{\includegraphics[width=0.4\textwidth]{ZINC85594070.jpg}}
+\hspace{.125\textwidth}
+
+\end{figure*}
+
+\begin{figure*}
+
+\setlength{\lineskip}{1ex}
+
+\subfloat[ZINC85628570 (-12.91)]{\includegraphics[width=0.4\textwidth]{ZINC85628570.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85628006 (-12.90)]{\includegraphics[width=0.4\textwidth]{ZINC85628006.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85550036 (-12.89)]{\includegraphics[width=0.4\textwidth]{ZINC85550036.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85542724 (-12.84)]{\includegraphics[width=0.4\textwidth]{ZINC85542724.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487705 (-12.80)]{\includegraphics[width=0.4\textwidth]{ZINC85487705.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487869 (-12.78)]{\includegraphics[width=0.4\textwidth]{ZINC85487869.jpg}}
+\hspace{.125\textwidth}
+
+\end{figure*}
+
+\begin{figure*}
+
+\setlength{\lineskip}{1ex}
+
+\subfloat[ZINC85594082 (-12.77)]{\includegraphics[width=0.4\textwidth]{ZINC85594082.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85628596 (-12.76)]{\includegraphics[width=0.4\textwidth]{ZINC85628596.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC95913993 (-12.71)]{\includegraphics[width=0.4\textwidth]{ZINC95913993.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85571258 (-12.68)]{\includegraphics[width=0.4\textwidth]{ZINC85571258.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85627936 (-12.66)]{\includegraphics[width=0.4\textwidth]{ZINC85627936.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85628028 (-12.66)]{\includegraphics[width=0.4\textwidth]{ZINC85628028.jpg}}
+\hspace{.125\textwidth}
+
+\end{figure*}
+
+\begin{figure*}
+
+\setlength{\lineskip}{1ex}
+
+\subfloat[ZINC85543442 (-12.65)]{\includegraphics[width=0.4\textwidth]{ZINC85543442.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487873 (-12.61)]{\includegraphics[width=0.4\textwidth]{ZINC85487873.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487891 (-12.61)]{\includegraphics[width=0.4\textwidth]{ZINC85487891.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85594037 (-12.60)]{\includegraphics[width=0.4\textwidth]{ZINC85594037.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85494077 (-12.60)]{\includegraphics[width=0.4\textwidth]{ZINC85494077.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487872 (-12.60)]{\includegraphics[width=0.4\textwidth]{ZINC85487872.jpg}}
+\hspace{.125\textwidth}
+
+\end{figure*}
+
+\begin{figure*}
+
+\setlength{\lineskip}{1ex}
+
+\subfloat[ZINC85628039 (-12.58)]{\includegraphics[width=0.4\textwidth]{ZINC85628039.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85542801 (-12.57)]{\includegraphics[width=0.4\textwidth]{ZINC85542801.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85544743 (-12.57)]{\includegraphics[width=0.4\textwidth]{ZINC85544743.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487850 (-12.53)]{\includegraphics[width=0.4\textwidth]{ZINC85487850.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487666 (-12.53)]{\includegraphics[width=0.4\textwidth]{ZINC85487666.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85627886 (-12.50)]{\includegraphics[width=0.4\textwidth]{ZINC85627886.jpg}}
+\hspace{.125\textwidth}
+
+\end{figure*}
+
+\begin{figure*}
+
+\setlength{\lineskip}{1ex}
+
+\subfloat[ZINC85628632 (-12.49)]{\includegraphics[width=0.4\textwidth]{ZINC85628632.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85542932 (-12.48)]{\includegraphics[width=0.4\textwidth]{ZINC85542932.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85544750 (-12.47)]{\includegraphics[width=0.4\textwidth]{ZINC85544750.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85532709 (-12.46)]{\includegraphics[width=0.4\textwidth]{ZINC85532709.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85571268 (-12.44)]{\includegraphics[width=0.4\textwidth]{ZINC85571268.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85594068 (-12.40)]{\includegraphics[width=0.4\textwidth]{ZINC85594068.jpg}}
+\hspace{.125\textwidth}
+
+\end{figure*}
+
+\begin{figure*}
+
+\setlength{\lineskip}{1ex}
+
+\subfloat[ZINC85542844 (-12.37)]{\includegraphics[width=0.4\textwidth]{ZINC85542844.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85867916 (-12.32)]{\includegraphics[width=0.4\textwidth]{ZINC85867916.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487512 (-12.32)]{\includegraphics[width=0.4\textwidth]{ZINC85487512.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487876 (-12.32)]{\includegraphics[width=0.4\textwidth]{ZINC85487876.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85540166 (-12.29)]{\includegraphics[width=0.4\textwidth]{ZINC85540166.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85571274 (-12.28)]{\includegraphics[width=0.4\textwidth]{ZINC85571274.jpg}}
+\hspace{.125\textwidth}
+
+\end{figure*}
+
+\begin{figure*}
+
+\setlength{\lineskip}{1ex}
+
+\subfloat[ZINC85594050 (-12.24)]{\includegraphics[width=0.4\textwidth]{ZINC85594050.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85627922 (-12.22)]{\includegraphics[width=0.4\textwidth]{ZINC85627922.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85542819 (-12.21)]{\includegraphics[width=0.4\textwidth]{ZINC85542819.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85627833 (-12.19)]{\includegraphics[width=0.4\textwidth]{ZINC85627833.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487894 (-12.19)]{\includegraphics[width=0.4\textwidth]{ZINC85487894.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85542627 (-12.18)]{\includegraphics[width=0.4\textwidth]{ZINC85542627.jpg}}
+\hspace{.125\textwidth}
+
+\end{figure*}
+
+\begin{figure*}
+
+\setlength{\lineskip}{1ex}
+
+\subfloat[ZINC35270745 (-12.18)]{\includegraphics[width=0.4\textwidth]{ZINC35270745.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85542621 (-12.15)]{\includegraphics[width=0.4\textwidth]{ZINC85542621.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487804 (-12.12)]{\includegraphics[width=0.4\textwidth]{ZINC85487804.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85571255 (-12.12)]{\includegraphics[width=0.4\textwidth]{ZINC85571255.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85543456 (-12.11)]{\includegraphics[width=0.4\textwidth]{ZINC85543456.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85627824 (-12.10)]{\includegraphics[width=0.4\textwidth]{ZINC85627824.jpg}}
+\hspace{.125\textwidth}
+
+\end{figure*}
+
+\begin{figure*}
+
+\setlength{\lineskip}{1ex}
+
+\subfloat[ZINC85542903 (-12.10)]{\includegraphics[width=0.4\textwidth]{ZINC85542903.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC20411878 (-12.10)]{\includegraphics[width=0.4\textwidth]{ZINC20411878.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85628793 (-12.08)]{\includegraphics[width=0.4\textwidth]{ZINC85628793.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC32123981 (-12.08)]{\includegraphics[width=0.4\textwidth]{ZINC32123981.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85544777 (-12.07)]{\includegraphics[width=0.4\textwidth]{ZINC85544777.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85542793 (-12.04)]{\includegraphics[width=0.4\textwidth]{ZINC85542793.jpg}}
+\hspace{.125\textwidth}
+
+\end{figure*}
+
+\begin{figure*}
+
+\setlength{\lineskip}{1ex}
+
+\subfloat[ZINC85542908 (-12.01)]{\includegraphics[width=0.4\textwidth]{ZINC85542908.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85550027 (-12.00)]{\includegraphics[width=0.4\textwidth]{ZINC85550027.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85628749 (-12.00)]{\includegraphics[width=0.4\textwidth]{ZINC85628749.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85487775 (-11.98)]{\includegraphics[width=0.4\textwidth]{ZINC85487775.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC79210000 (-11.98)]{\includegraphics[width=0.4\textwidth]{ZINC79210000.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85627948 (-11.97)]{\includegraphics[width=0.4\textwidth]{ZINC85627948.jpg}}
+\hspace{.125\textwidth}
+
+\end{figure*}
+
+\begin{figure*}
+
+\setlength{\lineskip}{1ex}
+
+\subfloat[ZINC85628054 (-11.96)]{\includegraphics[width=0.4\textwidth]{ZINC85628054.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85627845 (-11.95)]{\includegraphics[width=0.4\textwidth]{ZINC85627845.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85627895 (-11.92)]{\includegraphics[width=0.4\textwidth]{ZINC85627895.jpg}}
+\hspace{.125\textwidth}
+\subfloat[ZINC85544783 (-11.91)]{\includegraphics[width=0.4\textwidth]{ZINC85544783.jpg}}
+\hspace{.125\textwidth}
+
+\end{figure*}
+
+%End figures here
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Things in concern}
+%Some Text
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{things in plan}
+%Some Text
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Things in interst}
+%Some Text
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Selected Publications}
+%Some Cites
+%
+%\bibliography{/Users/ukevi/Dropbox/BibTex/ccLib}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}

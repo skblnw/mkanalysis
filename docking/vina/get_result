@@ -1,0 +1,13 @@
+#!/bin/bash
+
+for fir in `ls .`
+do
+        if [ -d $fir ]
+        then
+                echo $fir
+                cd $fir
+                ener=`sed -n -e '27p' ./log.txt | awk {'print $2'}`
+                echo $fir $ener >> ../result.txt
+                cd ../
+        fi
+done
