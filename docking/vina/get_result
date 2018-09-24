@@ -6,8 +6,11 @@ do
         then
                 echo $fir
                 cd $fir
-                ener=`sed -n -e '27p' ./log.txt | awk {'print $2'}`
-                echo $fir $ener >> ../result.txt
+                ener=`grep "^   1 " ./log.txt | awk {'print $2'}`
+                echo $fir $ener >> ../result
                 cd ../
         fi
 done
+
+sort -h -k2 result > ../sort
+rm result
