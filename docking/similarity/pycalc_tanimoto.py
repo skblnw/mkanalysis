@@ -1,4 +1,5 @@
 #!/bin/python3
+# -Prepare combined.sdf: obabel *.mol2 -osdf > combined.sdf
 # -Loop over mol2 in current directory 
 # -Calculate tanimoto coefficient using OpenBabel
 # -Print coeff>.6
@@ -21,7 +22,7 @@ def create_dict(raw, coeff):
 def print_dict(coeff):
     if coeff:
         print(title, end=': ')
-        for key in coeff:
+        for key in sorted(coeff):
             print(key, end=' ')
         print("")
 
