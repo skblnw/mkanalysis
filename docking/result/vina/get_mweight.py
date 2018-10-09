@@ -7,9 +7,15 @@
 import re
 import urllib
 import subprocess
+import argparse
+from argparse import RawDescriptionHelpFormatter
+
+ap = argparse.ArgumentParser(description=__doc__, formatter_class=RawDescriptionHelpFormatter)
+ap.add_argument('input', type=str, help='Contains ZINC ID line by line', metavar='namelist')
+cmd = ap.parse_args()
 
 print "Name          Mol.W (g/mol)   xlogP"
-f = open('namelist', 'r')
+f = open(cmd.input, 'r')
 for line in f:
     index = line.strip()
     url = "http://zinc.docking.org/substance/"+index
@@ -30,5 +36,12 @@ for line in f:
         except NameError:
             continue
         else:
-            print index+"  "+mweight+"  "+xlogp
+            if float(xlogp) > 5:
+                print index+"  "+mweight+"  "+xlogp+" XXX rejected due to high xlogp"
+            elif float(xlogp) < 3:
+                print index+"  "+mweight+"  "+xlogp+" OOO recommended due to low xlogp"
+            else:
+                print index+"  "+mweight+"  "+xlogp
+            del mweight
+            del xlogp
             break
