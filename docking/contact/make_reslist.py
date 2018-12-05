@@ -11,7 +11,7 @@ for ii in f:
         ii=ii.split()
         jj=list(map(int, ii))
     for kk in jj:
-        A[kk]=A[kk]+1
+        A[kk-1]=A[kk-1]+1
 
 print(A)
 np.savetxt("reslist.txt", A)
