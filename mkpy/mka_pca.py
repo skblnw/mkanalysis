@@ -3,7 +3,7 @@ import mdtraj as md
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 
-traj = md.load('/home/PHARMACY/chan.773/storage/cpf1/run_complex/md-1-100-pf100ps-fit.xtc', top='/home/PHARMACY/chan.773/Dropbox/QWD/CRISPR-Cpf1/cpf1/run_rna/output/initial.pdb')
+traj = md.load('trjcat.xtc', top='prot.pdb')
 pca1 = PCA(n_components=2)
 traj.superpose(traj, 0)
 reduced_cartesian = pca1.fit_transform(traj.xyz.reshape(traj.n_frames, traj.n_atoms * 3))
