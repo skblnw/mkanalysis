@@ -1,7 +1,9 @@
 import numpy as np
+import mdtraj as md
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 
-f = open('correl.dat', 'r')
+f = open('correl_apo.dat', 'r')
 firstline = f.readline()
 size=int(firstline.split()[0])
 
@@ -14,9 +16,11 @@ new = npa.reshape(size,size)
 #np.savetxt(new, 'out')
 
 fig, ax = plt.subplots()
-plt.imshow(new, interpolation='gaussian', vmin=0, vmax=1,
-           cmap=plt.cm.RdBu_r)
-ax.set_xlim(1,169)
-ax.set_ylim(1,169)
-plt.colorbar()
-plt.show()
+im = ax.imshow(new, interpolation='gaussian', vmin=0, vmax=1,cmap=plt.cm.jet)
+ax.set_xlim(0, 1306)
+ax.set_ylim(0, 1306)
+plt.colorbar(im)
+
+plt.tight_layout()
+plt.savefig("gc_apo.pdf")
+#plt.show()
