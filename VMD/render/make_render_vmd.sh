@@ -72,9 +72,9 @@ for {set ii 18} {\$ii < \$nf} {incr ii 1} {
         display update
         animate goto \$ii
         set filename snap_[format "%04d" [expr \$ii]]
-        render aasamples TachyonLOSPRayInternal 12
-        render TachyonLOSPRayInternal \$outdir1/\$filename.tga
-        #render aasamples TachyonInternal 12
+        render aasamples TachyonLOptiXInternal 12
+        render TachyonLOptiXInternal \$outdir1/\$filename.tga
+        #render aasamples TachyonLOptiXInternal 12
         #render TachyonInternal \$outdir1/\$filename.tga
         puts "From \$outdir1/\$filename.tga"
         puts "To \$outdir2/\$filename.jpg"
