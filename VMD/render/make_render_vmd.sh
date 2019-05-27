@@ -11,7 +11,7 @@ DCD_DIR=/home/chan773/playground/cpf1/run/output
 # Where you wanna output JPG
 RENDER_DIR=/home/chan773/playground/render/cpf1-amber-test
 # Temporary folder for TGA files, usually leave as defualt
-TMP_DIR=/home/chan773/playground/render/tmp
+TMP_DIR=/home/PHARMACY/chan.773/playground/render/tmp
 
 cd $RENDER_DIR
 for name in front
