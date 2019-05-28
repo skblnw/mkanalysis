@@ -3,22 +3,20 @@
 # First frame of the trajectory will be the reference structure
 # i.e. if pdb!==0, ref=<pdb>; else ref=<first frame of dcd>
 
-PSF=../combine_dcd/initial-noW.psf
-PDB=../combine_dcd/initial-noW.pdb
-DCD=../combine_dcd/npt-pf1000ps.dcd
+PSF=prot.pdb
+PDB=0
+DCD=(".xtc" ".xtc")
 
-start_ns=100
+start_ns=0
 psperframe=100
 start_frame=$(($start_ns*1000/$psperframe))
 
-OUTPUT_NAME=("P1-PROT" "P1-MONO" "P1-BAR" "P1-PH")
-REFSEL=("protein and backbone" "protein and segname P1 and name CA" "protein and segname P1 and resid 1 to 250 and name CA" "protein and segname P1 and resid 251 to 361 and name CA")
+OUTPUT_NAME=("out")
+REFSEL=("protein and name CA")
 
-for ii in {0..3}
+for ii in {0..1}
 do
-    outname=${OUTPUT_NAME[$ii]}
-    sel1=${REFSEL[$ii]}
-    sel2=${RMSFSEL[$ii]}
+    sel1=${REFSEL[0]}
     sed -e "s/REFSEL/$sel1/g" template-vm-cal-rmsf-tcl > vm_cal-rmsf.tcl
-    vmd -dispdev text -e vm_cal-rmsf.tcl -args $PSF $PDB $DCD $start_frame $outname
+    vmd -dispdev text -e vm_cal-rmsf.tcl -args $PSF $PDB ${DCD[$ii]} $start_frame ${OUTPUT_NAME}-$ii
 done
