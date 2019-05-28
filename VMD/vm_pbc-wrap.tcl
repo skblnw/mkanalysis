@@ -35,7 +35,7 @@ package require pbctools
 # Sometimes you have to unwrap the trajectory first if the protein jumped too much
 # pbc unwrap -all
 # In fact, you do NOT have to define pbc box if you are only wrapping dcd. Box size already exists.
-pbc wrap -first 1 -last last -center com -centersel "segname P1" -compound fragment
+pbc wrap -first 1 -last last -center com -centersel "protein" -compound fragment
 
 set comseltext "protein"
 
