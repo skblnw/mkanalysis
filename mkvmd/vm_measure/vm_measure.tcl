@@ -27,7 +27,7 @@ source
 # Make sure you will delete all the existing files
 # !!!Important!!!
 #eval file delete [glob output/*.dat]
-set OUTPUT_DIR output
+set OUTPUT_DIR [exec date +%Y%m%d%H%M%S]
 exec mkdir -p $OUTPUT_DIR
 
 # Load packages for calculating principle axis (if needed)
@@ -35,9 +35,9 @@ exec mkdir -p $OUTPUT_DIR
 #namespace import Orient::orient 
 
 # Load your structure and frames
-set molnum [mol new ../combine_dcd/initial-noW.psf waitfor all]
-mol addfile ../combine_dcd/initial-noW.pdb waitfor all
-mol addfile ../combine_dcd/ waitfor all
+set molnum [mol new .psf waitfor all]
+mol addfile .pdb waitfor all
+mol addfile .dcd waitfor all
 
 set total_frame [molinfo $molnum get numframes]
 for {set nn 0} {$nn < $total_frame} {incr nn} {
