@@ -10,6 +10,7 @@ VMD=vmd
 DCD_DIR=/home/chan773/playground/cpf1/run/output
 # Where you wanna output JPG
 RENDER_DIR=/home/chan773/playground/render/cpf1-amber-test
+mkidr -p $RENDER_DIR
 # Temporary folder for TGA files, usually leave as defualt
 TMP_DIR=/home/PHARMACY/chan.773/playground/render/tmp
 
@@ -17,7 +18,7 @@ cd $RENDER_DIR
 for name in front
 do
     # Name of VS
-    VS_NAME=$DCD_DIR/vs_render_$name
+    VS_NAME=$DCD_DIR/vs_$name
 
     OUTPUT_DIR1=$TMP_DIR/output-$name
     OUTPUT_DIR2=$RENDER_DIR/output-$name
@@ -46,7 +47,7 @@ proc drawcounter { name element op } {
     draw color black 
     set nsperframe 1
     set time [format "%3.2f ns" [expr \$vmd_frame([molinfo top]) * \$nsperframe]] 
-    draw text {-100 -60 0} "\$time" size 1 thickness 2
+    draw text {0 0 0} "\$time" size 1 thickness 2
 }
 #enabletrace
 EOF
