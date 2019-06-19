@@ -14,7 +14,7 @@ start_frame=$(($start_ns*1000/$psperframe))
 OUTPUT_NAME=("out")
 REFSEL=("protein and name CA")
 
-for ii in {0..1}
+for ii in {0..0}
 do
     sel1=${REFSEL[0]}
     sed -e "s/REFSEL/$sel1/g" template-vm-cal-rmsf-tcl > vm_cal-rmsf.tcl

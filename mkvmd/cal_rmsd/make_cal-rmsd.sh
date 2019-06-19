@@ -11,7 +11,7 @@ SELREF=("protein and name CA")
 SELRMSD=("protein and name CA")
 OUTPUT_NAME=("out")
 
-for ii in {0..1}
+for ii in {0..0}
 do
     ref=${SELREF[0]}
     rmsd=${SELRMSD[0]}
