@@ -19,13 +19,9 @@ if {0} {
 }
 
 # Wrapping the trajectory according to the pbc size
-set PSFNAME initial-noW.psf
-set PDBNAME initial-noW.pdb
-set DCDNAME Bigdcd/npt-pf200ps-3-full.dcd
 
-set mol [mol new $PSFNAME type psf waitfor all]
-mol addfile $PDBNAME type pdb waitfor all
-mol addfile $DCDNAME type dcd waitfor all
+set mol [mol new ../pdb2gmx/ionized.pdb type pdb waitfor all]
+mol addfile pf1200ps.trr type trr waitfor all
 
 package require pbctools
 # pbc set $vec_init
@@ -33,9 +29,10 @@ package require pbctools
 # Sometimes it is more straight-forward to read a xsc file for pbc size
 # pbc read
 # Sometimes you have to unwrap the trajectory first if the protein jumped too much
-# pbc unwrap -all
+pbc unwrap -all
+animate write trr unwrap.trr $mol
 # In fact, you do NOT have to define pbc box if you are only wrapping dcd. Box size already exists.
-pbc wrap -first 1 -last last -center com -centersel "protein" -compound fragment
+#pbc wrap -first 1 -last last -center com -centersel "protein" -compound fragment
 
 set comseltext "protein"
 
@@ -75,5 +72,5 @@ for {set i 1} {$i < $frames} {incr i} {
 }
 puts "Info) Done, now write wrapped dcd"
 
-animate write dcd Bigdcd/wrapped-pf200ps.dcd $mol
+animate write trr md-pf1200ps.trr $mol
 quit
