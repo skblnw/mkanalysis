@@ -72,5 +72,5 @@ for {set i 1} {$i < $frames} {incr i} {
 }
 puts "Info) Done, now write wrapped dcd"
 
-animate write trr md-pf1200ps.trr $mol
+animate write trr md-pf1200ps-fit.trr $mol
 quit
