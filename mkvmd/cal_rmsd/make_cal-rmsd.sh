@@ -11,21 +11,9 @@ if [ ! -f $TRJ ]; then
     exit 0
 fi
 
-SELREF=("protein and name CA and not resid 420 to 448 640 to 655 1151 to 1167" \
-    "protein and name CA and resid 24 to 338" \
-    "protein and name CA and resid 339 to 590 and not resid 420 to 448 " \
-    "protein and name CA and resid 1 to 23 591 to 661 762 to 891 and not resid 640 to 655" \
-    "protein and name CA and resid 662 to 761" \
-    "protein and name CA and resid 892 to 1077 1255 to 1300" \
-    "protein and name CA and resid 1078 to 1254 and not resid 1151 to 1167")
-SELRMSD=("protein and name CA and not resid 420 to 448 640 to 655 1151 to 1167" \
-    "protein and name CA and resid 24 to 338" \
-    "protein and name CA and resid 339 to 590 and not resid 420 to 448 " \
-    "protein and name CA and resid 1 to 23 591 to 661 762 to 891 and not resid 640 to 655" \
-    "protein and name CA and resid 662 to 761" \
-    "protein and name CA and resid 892 to 1077 1255 to 1300" \
-    "protein and name CA and resid 1078 to 1254 and not resid 1151 to 1167")
-OUTPUT_NAME=("all" "rec1" "rec2" "wed" "pi" "ruvc" "nuc")
+SELREF=("protein and name CA")
+SELRMSD=("protein and name CA")
+OUTPUT_NAME=("CA")
 
 echo "" > vm_cal-rmsd.tcl
 cat >> vm_cal-rmsd.tcl << EOF
@@ -37,7 +25,7 @@ set sel_all [atomselect top all]
 
 EOF
 
-for ii in {0..6}
+for ii in {0..0}
 do
     
     cat >> vm_cal-rmsd.tcl << EOF
