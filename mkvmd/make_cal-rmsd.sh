@@ -1,9 +1,8 @@
 #!/bin/bash
-# -args <ref> <pdb>/0 <dcd> <outname>
-# First frame of the trajectory will be the reference structure
-# i.e. if pdb!==0, ref=<pdb>; else ref=<first frame of dcd>
+# KevC @ 2019
+# Bash script to calculate RMSD profile
 
-PSF=initial-noW.psf
+PDB=initial-noW.pdb
 TRJ=md.trr
 
 if [ ! -f $TRJ ]; then
@@ -18,7 +17,7 @@ OUTPUT_NAME=("CA")
 echo "" > vm_cal-rmsd.tcl
 cat >> vm_cal-rmsd.tcl << EOF
 
-set mol [mol new $PSF waitfor all]
+set mol [mol new $PDB waitfor all]
 mol addfile $TRJ waitfor all
 set num_frames [molinfo \$mol get numframes]
 set sel_all [atomselect top all]

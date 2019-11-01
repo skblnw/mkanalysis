@@ -1,11 +1,11 @@
 #!/bin/bash
-# -args <ref> <pdb>/0 <dcd> <outname>
-# First frame of the trajectory will be the reference structure
-# i.e. if pdb!==0, ref=<pdb>; else ref=<first frame of dcd>
+# KevC @ 2019
+# Bash script to calculate RMSF profile 
+# Turn on BLOCK_RMSF to calculate RMSF for blocks of trajectory
+
 
 BLOCK_RMSF=false
 
-PSF=initial-noW.psf
 PDB=initial-noW.pdb
 TRJ=md.trr
 
@@ -21,8 +21,7 @@ REFSEL=("protein and name CA")
 echo "" > vm_cal-rmsf.tcl
 cat >> vm_cal-rmsf.tcl << EOF
 
-set mol [mol new $PSF waitfor all]
-mol addfile $PDB waitfor all
+set mol [mol new $PDB waitfor all]
 mol addfile $TRJ waitfor all
 set num_frames [molinfo \$mol get numframes]
 set seltext "$REFSEL"
