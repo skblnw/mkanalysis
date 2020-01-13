@@ -2,17 +2,23 @@
 # KevC @ 2019
 # Bash script to calculate RMSD profile
 
-PDB=initial-noW.pdb
-TRJ=md.trr
+PDB="$1"
+TRJ="$2"
+SELREF=("protein and name CA")
+SELRMSD=("protein and name CA")
+OUTPUT_NAME=("CA")
+[ $# -eq 0 ] && { echo "mkvmd> Usage: $0 [PDB] [TRJ]"; echo "mkvmd> By default, the selection is '$SELRMSD'"; exit 1; }
+
+if [ ! -f $PDB ]; then
+    echo -e "$PDB \nStructure not found!"
+    exit 0
+fi
 
 if [ ! -f $TRJ ]; then
     echo -e "$TRJ \nTrajectory not found!"
     exit 0
 fi
 
-SELREF=("protein and name CA")
-SELRMSD=("protein and name CA")
-OUTPUT_NAME=("CA")
 
 echo "" > vm_cal-rmsd.tcl
 cat >> vm_cal-rmsd.tcl << EOF
