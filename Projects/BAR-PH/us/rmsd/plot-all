@@ -1,4 +1,0 @@
-filelist=system("ls output/us-z*.dat")
-set key outside
-set xlabel 'ns'
-plot for [filename in filelist] filename using ($1/5):2 title sprintf(filename) with l
