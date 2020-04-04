@@ -4,8 +4,8 @@
 
 PDB="$1"
 TRJ="$2"
-SELREF=("protein and name CA")
-SELRMSD=("protein and name CA")
+SELREF=("name CA")
+SELRMSD=("name CA")
 OUTPUT_NAME=("CA")
 [ $# -eq 0 ] && { echo "mkvmd> Usage: $0 [PDB] [TRJ]"; echo "mkvmd> By default, the selection is '$SELRMSD'"; exit 1; }
 
