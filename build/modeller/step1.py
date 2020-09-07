@@ -1,6 +1,6 @@
 from modeller import *
 # Get the sequence of the 1qg8 PDB file, and write to an alignment file
-code = 'protein'
+code = 'prot'
 
 e = environ()
 m = model(e, file=code)

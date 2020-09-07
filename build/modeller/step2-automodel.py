@@ -9,7 +9,7 @@ env = environ()
 env.io.atom_files_directory = ['.', '../atom_files']
 
 a = automodel(env,
-    alnfile  = 'alignment.seq',
+    alnfile  = 'prot.seq',
     knowns   = 'prot',
     sequence = 'prot_fill',
     assess_methods=(assess.DOPE,
