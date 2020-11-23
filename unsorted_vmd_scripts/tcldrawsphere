@@ -1,0 +1,49 @@
+draw delete all
+set sel [atomselect top "name O4'"]
+foreach ii [$sel get residue] {
+    set selcg [atomselect top "residue $ii and name C1' C2' C3' O4' C5'"]
+    draw color 6
+    draw material Glass2
+    draw sphere [measure center $selcg weight mass] radius 2 resolution 48
+    set selcg [atomselect top "residue $ii and name F"]
+    draw color 9
+    draw material Glass2
+    draw sphere [list [$selcg get x] [$selcg get y] [$selcg get z]] radius 1 resolution 48
+}
+
+set sel [atomselect top "name P"]
+foreach ii [$sel get residue] {
+    set selcg [atomselect top "residue $ii and name P"]
+    draw color 6
+    draw material Glass2
+    draw sphere [measure center $selcg weight mass] radius 2 resolution 48
+}
+
+draw material Glass2
+set sel [atomselect top "resname A"]
+foreach ii [$sel get residue] {
+    set selcg [atomselect top "residue $ii and name N1 C2 N3 C4 C5 C6 N7 C8 N9"]
+    draw color 29
+    draw sphere [measure center $selcg weight mass] radius 2 resolution 48
+}
+
+set sel [atomselect top "resname U"]
+foreach ii [$sel get residue] {
+    set selcg [atomselect top "residue $ii and name N1 C2 N3 C4 C5 C6"]
+    draw color 23
+    draw sphere [measure center $selcg weight mass] radius 2 resolution 48
+}
+
+set sel [atomselect top "resname C"]
+foreach ii [$sel get residue] {
+    set selcg [atomselect top "residue $ii and name N1 C2 N3 C4 C5 C6"]
+    draw color 19
+    draw sphere [measure center $selcg weight mass] radius 2 resolution 48
+}
+
+set sel [atomselect top "resname G"]
+foreach ii [$sel get residue] {
+    set selcg [atomselect top "residue $ii and name N1 C2 N3 C4 C5 C6 N7 C8 N9"]
+    draw color 31
+    draw sphere [measure center $selcg weight mass] radius 2 resolution 48
+}
