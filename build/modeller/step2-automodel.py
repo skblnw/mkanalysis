@@ -3,7 +3,7 @@ from modeller.automodel import *    # Load the automodel class
 
 log.verbose()
 
-env = environ()
+env = Environ()
 
 # directories for input atom files
 env.io.atom_files_directory = ['.', '../atom_files']
