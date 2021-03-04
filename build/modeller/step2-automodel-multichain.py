@@ -3,16 +3,20 @@ from modeller.automodel import *    # Load the automodel class
 
 log.verbose()
 
-class MyModel(automodel):
-    def special_patches(self, aln):
-        # Rename both chains and renumber the residues in each
-        self.rename_segments(segment_ids=['K', 'L', 'M', 'N'])
-env = environ()
+env = Environ()
 
 # directories for input atom files
 env.io.atom_files_directory = ['.', '../atom_files']
 
-a = automodel(env,
+class MyModel(AutoModel):
+    def special_patches(self, aln):
+        self.rename_segments(segment_ids=['A'],
+                             renumber_residues=[69])
+    def select_atoms(self):
+        return Selection(self.residue_range('400:A', '449:A'),
+                         self.residue_range('822:A', '836:A'))
+
+a = MyModel(env,
     alnfile  = 'prot.seq',
     knowns   = 'prot',
     sequence = 'prot_fill',
