@@ -1,0 +1,8 @@
+package require Orient 
+namespace import Orient::orient
+set sel [atomselect top all]
+set I [draw principalaxes $sel]
+set A [orient $sel [lindex $I 0] {0 0 -1}]
+$sel move $A
+$sel moveby [vecinvert [measure center $sel]]
+$sel writepdb revert.pdb

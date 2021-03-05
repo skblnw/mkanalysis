@@ -1,0 +1,5 @@
+coord ../revert.pdb
+radius ../amberuni.rad
+cvect 0.0 0.0 1.0
+sphpdb out.sph
+endrad 30
