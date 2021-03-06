@@ -1,0 +1,7 @@
+#!/bin/bash
+
+COV=90
+PREFIX=cov$COV
+
+hhblits -i prot.seq -d ../database/UniRef30_2020_06 -o $PREFIX.hhr -n 2 -oa3m $PREFIX.a3m -cov $COV
+reformat.pl a3m fas $PREFIX.a3m $PREFIX.fas

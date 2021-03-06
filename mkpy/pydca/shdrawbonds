@@ -1,0 +1,89 @@
+#!/bin/bash
+source ~/.zshrc
+
+grep -v "^#" out.txt > tmp
+
+cat > TCL << 'EOF'
+set THRES 0.2
+set SHIFT 314
+set infile [open "tmp" r]
+set outfile [open "tmppairs" w]
+set outlog [open "LOG" w]
+set nn 0
+while {[gets $infile line] >= 0} {
+    lassign [regexp -inline -all {\S+} $line] ii jj kk
+    if {$kk > $THRES} {
+        puts $outfile "$ii $jj $kk"
+        incr nn
+    }
+}
+puts $outlog "No. of Pairs (DCA score > $THRES): $nn"
+close $infile
+close $outfile
+
+mol new ../pdb_monomer.pdb
+draw delete all
+set sel [atomselect top "name CA"]
+set rr [measure rgyr $sel]
+puts $outlog "Radius of gyration of the monomer: $rr"
+set infile [open "tmppairs" r]
+set outfile [open "tmppairs_clearmissing" w]
+set nn 0
+while {[gets $infile line] >= 0} {
+    lassign [regexp -inline -all {\S+} $line] ii jj kk
+    set ii [expr $ii + $SHIFT]
+    set jj [expr $jj + $SHIFT]
+    set sel [atomselect top "resid $ii $jj and name CA"]
+    set sel1 [atomselect top "resid $ii and name CA"]
+    set sel2 [atomselect top "resid $jj and name CA"]
+    if {[llength [$sel get index]] != 2} {
+        puts $outlog "Missing pair: $ii $jj"
+    } elseif {[measure bond [$sel get index]] > [expr $rr * 1]} {
+        puts [measure bond [$sel get index]]
+        draw cylinder [measure center $sel1] [measure center $sel2] radius $kk 
+        puts $outfile "$ii $jj $kk"
+        incr nn
+    }
+}
+puts $outlog "No. of Pairs (Distance > rgyr): $nn"
+close $infile
+close $outfile
+
+mol new ../pdb_dimer.pdb
+draw delete all
+draw color white
+set sel [atomselect top "name CA"]
+set selall [atomselect top all]
+set selcenter [atomselect 0 "name CA"]
+$selall moveby [vecsub [measure center $sel] [measure center $selcenter]]
+set sela [atomselect top "chain A and name CA"]
+set selb [atomselect top "chain B and name CA"]
+set rr [vecdist [measure center $sela] [measure center $selb]]
+puts $rr
+set infile [open "tmppairs_clearmissing" r]
+set outfile [open "pairs_draw" w]
+set nn 0
+while {[gets $infile line] >= 0} {
+    lassign [regexp -inline -all {\S+} $line] ii jj kk
+    set sela [atomselect top "chain A and resid $ii and name CA or chain B and resid $jj and name CA"]
+    set selb [atomselect top "chain B and resid $ii and name CA or chain A and resid $jj and name CA"]
+    if {[measure bond [$sela get index]] < [measure bond [$selb get index]]} {
+        set sel1 [atomselect top "chain A and resid $ii and name CA"]
+        set sel2 [atomselect top "chain B and resid $jj and name CA"]
+        draw cylinder [measure center $sel1] [measure center $sel2] radius [expr $kk * 10]
+        puts $outfile "$ii $jj $kk"
+    } else {
+        set sel1 [atomselect top "chain B and resid $ii and name CA"]
+        set sel2 [atomselect top "chain A and resid $jj and name CA"]
+        draw cylinder [measure center $sel1] [measure center $sel2] radius [expr $kk * 10]
+        puts $outfile "$jj $ii $kk"
+    }
+}
+close $infile
+close $outfile
+
+close $outlog
+EOF
+
+vmd -e TCL
+rm -f TCL
