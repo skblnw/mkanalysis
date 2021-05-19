@@ -2,8 +2,6 @@
 
 from pylab import *
 import matplotlib.pyplot as plt
-
-
 import argparse
 from argparse import RawDescriptionHelpFormatter
 
