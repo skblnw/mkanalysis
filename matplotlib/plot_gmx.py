@@ -18,13 +18,13 @@ io_group.add_argument('-i', '--interactive', action='store_true',
 cmd = ap.parse_args()
 
 params = {
-   'axes.labelsize': 12,
-   'font.size': 12,
-   'legend.fontsize': 14,
-   'xtick.labelsize': 20,
-   'ytick.labelsize': 20,
+   'axes.labelsize': 24,
+   'font.size': 24,
+   'legend.fontsize': 26,
+   'xtick.labelsize': 32,
+   'ytick.labelsize': 32,
    'text.usetex': False,
-   'figure.figsize': [6, 6]
+   'figure.figsize': [12, 12]
    }
 rcParams.update(params)
 
@@ -42,8 +42,8 @@ ax.plot(data[:,0]/1000, data[:,1]*10, alpha=0.9, linewidth=2.5, linestyle='-', l
 
 #xlim(0, 300)
 ylim(0, 6)
-plt.xlabel('Time (ns)', fontsize=14)
-plt.ylabel('RMSD (A)', fontsize=14)
+plt.xlabel('Time (ns)', fontsize=24)
+plt.ylabel('RMSD (A)', fontsize=24)
 
 legend = legend(loc=4);
 frame = legend.get_frame()
