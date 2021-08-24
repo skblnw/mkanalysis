@@ -1,0 +1,83 @@
+#!/bin/bash
+# -args <ref> <pdb>/0 <dcd> <outname>
+# First frame of the trajectory will be the reference structure
+# i.e. if pdb!==0, ref=<pdb>; else ref=<first frame of dcd>
+
+PSF=../combine_dcd/initial-noW.psf
+PDB=../combine_dcd/initial-noW.pdb
+DCD=../combine_dcd/.dcd
+NFRAME=`catdcd -num $DCD | grep "Total frames" | awk '{print $3}'`
+
+psperframe=100
+WIN_ns=100
+WIN_frame=$(($WIN_ns*1000/$psperframe))
+MOVE_ns=100
+MOVE_frame=$(($MOVE_ns*1000/$psperframe))
+BLOCK=6
+
+REFSEL="protein and segname P1 and backbone"
+
+rsync -a /home/kevin/Dropbox/QWD/scripts/Analysis/cal_moving/template-vm-cal-rmsf-tcl vm_cal-rmsf.tcl
+
+customize=false
+backward=false
+forward=false
+
+if $customize; then
+LAST=$(($NFRAME-1))
+for ((ii=1; $ii<=$BLOCK; ii++)); do
+    FIRST=$(($LAST-$WIN_frame))
+    if [[ $FIRST -lt 0 ]]; then
+        FIRST=0
+    fi
+
+    OUTPUT_DIR="output_W${WIN_ns}_M${MOVE_ns}"
+    mkdir -p $OUTPUT_DIR
+    outname=$OUTPUT_DIR/rmsf_block${ii}_start0
+    sed -i "s/REFSEL/$REFSEL/g" vm_cal-rmsf.tcl
+    echo -e "Info: FIRST: $FIRST LAST: $LAST"
+    vmd -dispdev text -e vm_cal-rmsf.tcl -args $PSF $PDB $DCD $FIRST $LAST $outname $OUTPUT_DIR $ii 
+
+    LAST=$(($LAST-$MOVE_frame-1))
+done
+fi
+
+if $backward; then
+ii=1
+LAST=$(($NFRAME-1))
+FIRST=$(($LAST-$WIN_frame*$ii))
+while [ $FIRST -gt 0 ]
+do
+
+    OUTPUT_DIR="output_W${WIN_ns}"
+    mkdir -p $OUTPUT_DIR
+    mkdir -p $OUTPUT_DIR/backward
+    outname=$OUTPUT_DIR/rmsf_block${ii}_start0
+    sed -i "s/REFSEL/$REFSEL/g" vm_cal-rmsf.tcl
+    echo -e "Info: FIRST: $FIRST LAST: $LAST"
+    vmd -dispdev text -e vm_cal-rmsf.tcl -args $PSF $PDB $DCD $FIRST $LAST $outname $OUTPUT_DIR/backward $ii
+
+    FIRST=$(($LAST-$WIN_frame*$ii))
+    let ii+=1
+done
+fi
+
+if $forward; then
+ii=1
+FIRST=0
+LAST=$(($FIRST+$WIN_frame*ii))
+while [ $LAST -lt $NFRAME ]
+do
+
+    OUTPUT_DIR="output_W${WIN_ns}"
+    mkdir -p $OUTPUT_DIR
+    mkdir -p $OUTPUT_DIR/forward
+    outname=$OUTPUT_DIR/rmsf_block${ii}_start0
+    sed -i "s/REFSEL/$REFSEL/g" vm_cal-rmsf.tcl
+    echo -e "Info: FIRST: $FIRST LAST: $LAST"
+    vmd -dispdev text -e vm_cal-rmsf.tcl -args $PSF $PDB $DCD $FIRST $LAST $outname $OUTPUT_DIR/forward $ii
+
+    LAST=$(($FIRST+$WIN_frame*$ii))
+    let ii+=1
+done
+fi

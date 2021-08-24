@@ -1,0 +1,45 @@
+################################
+## TCL script to calculate RMSF
+## Jun Apr 2014
+## Usage:
+## Output:
+## Units:
+## Notes: 
+################################
+
+set psfname [lindex $argv 0]
+set pdbname [lindex $argv 1]
+set dcdname [lindex $argv 2]
+set FIRST [lindex $argv 3]
+set LAST [lindex $argv 4]
+set outname [lindex $argv 5]
+set OUTPUT_DIR [lindex $argv 6]
+set index [lindex $argv 7]
+
+exec mkdir -p $OUTPUT_DIR
+
+set mol [mol new $psfname waitfor all]
+if { $pdbname != 0 } {
+    mol addfile $pdbname waitfor all}
+mol addfile $dcdname first $FIRST last $LAST waitfor all
+
+set num_frames [molinfo $mol get numframes]
+set seltext "REFSEL"
+set a [atomselect top $seltext]
+set ref [atomselect top $seltext frame 0]
+for {set ii 0} {$ii < $num_frames} {incr ii} {
+    $a frame $ii
+    $a update
+    $a move [measure fit $a $ref]
+}
+
+set outfile [open "$outname.dat" "w"]
+set seltext "protein and name CA"
+set sel [atomselect top $seltext]
+set rmsf [measure rmsf $sel first 1 last -1]
+for {set i 0} {$i <  [$sel num] } {incr i} {
+    puts $outfile "[expr {$i+1}] [lindex $rmsf $i]"
+}
+close $outfile
+
+quit
