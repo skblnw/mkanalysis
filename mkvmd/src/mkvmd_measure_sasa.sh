@@ -6,11 +6,14 @@
 ## Units: A
 #########################################
 
+SEL1="segname PROA"
+SEL2="segname MUT"
+SEL_COMBINE="segname PROA MUT"
+
 PDB="$1"
 TRJ="$2"
-REF="$3"
-OUTPUT="$4"
-[ $# -ne 4 ] && { echo "mkvmd> Usage: $0 [PDB] [TRJ] [REF] [OUTPUT]"; exit 1; }
+OUTPUT="$3"
+[ $# -ne 3 ] && { echo -e "mkvmd> Usage: $0 [PDB] [TRJ] [OUTPUT]\n       By default, the selections are:\n       Selection 1: $SEL1\n       Selection 2: $SEL2\n       Selection combined: $SEL_COMBINE"; exit 1; }
 
 if [ ! -f $PDB ]; then
     echo -e "$PDB \nStructure not found!"
@@ -22,14 +25,15 @@ if [ ! -f $TRJ ]; then
     exit 0
 fi
 
-if [ ! -f $REF ]; then
-    echo -e "$REF \nStructure not found!"
-    exit 0
-fi
-
 rm $OUTPUT
 cat > tcl << EOF
-source proc_calSasa.tcl
+proc measureSasa { nn } {
+    set sel1 [atomselect top "$SEL1" frame \$nn]
+    set sel2 [atomselect top "$SEL2" frame \$nn]
+    set selall [atomselect top "$SEL_COMBINE" frame \$nn]
+    
+    return [format "%.2f" [expr -([measure sasa 1.4 \$selall] - [measure sasa 1.4 \$sel1] - [measure sasa 1.4 \$sel2]) / 2.0]]
+}
 
 # /------------------/
 # /     Main Body    /
@@ -47,11 +51,6 @@ source proc_calSasa.tcl
 #package require Orient 
 #namespace import Orient::orient 
 
-# Load your structure and frames
-mol new $REF
-set ref [atomselect top "name CA and same residue as {chain B and within 6 of chain A}"]
-set tt [llength [\$ref get resid]]
-
 mol new $PDB waitfor all
 mol addfile $TRJ waitfor all
 set total_frame [molinfo top get numframes]
@@ -63,9 +62,6 @@ for {set nn 0} {\$nn < \$total_frame} {incr nn} {
     # /------------------------------------------------/
     # /     Where you really have to use your brain    /
     # /------------------------------------------------/
-    # Uncomment if you need PA
-#    set selref [atomselect top "protein and name CA" frame \$nn]
-#    set Iref [Orient::calc_principalaxes \$selref]
 
     # Reset index of selections
     set nsel 0
@@ -85,7 +81,7 @@ for {set nn 0} {\$nn < \$total_frame} {incr nn} {
     # This determines <number of columns in one output file>
       foreach {seg1 seg2} {1 1} {
           # Call calc funtion you like
-          lappend out_line [calSasa \$nn]
+          lappend out_line [measureSasa \$nn]
       }
       # Write to file
       puts \$outf "\$out_line"

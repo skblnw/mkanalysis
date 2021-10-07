@@ -63,14 +63,15 @@ cmd = ap.parse_args()
 
 reference = ['/data/kevin/sarscov2/7bwj/md/rbdace2/analysis/countWater/pf100ps/1.dat',
              '/data/kevin/sarscov2/7bwj/md/rbdace2/analysis/countWater/pf100ps/2.dat']
-reference = ['result-wt.dat']
 farray = [np.loadtxt(f, comments=['#','@']) for f in reference]
 dataref = np.concatenate(farray)
 # dataref = np.loadtxt(reference[1], comments=['#','@'])
 
 data = np.loadtxt(cmd.input, comments=['#','@'])
-dataplot = np.true_divide(np.subtract(data, dataref.mean(axis=0)), np.where(dataref.std(axis=0)<1, 1, dataref.std(axis=0)))
-np.nan_to_num(dataplot, nan=0)
+data_standardized = np.true_divide(np.subtract(data, dataref.mean(axis=0)), np.where(dataref.std(axis=0)<1, 1, dataref.std(axis=0)))
+np.nan_to_num(data_standardized, nan=0)
+
+corr = np.dot(data_standardized.T, data_standardized) / len(data_standardized)
 
 # /----------------------------------------------------/
 # /                     Plotting Area                  /
