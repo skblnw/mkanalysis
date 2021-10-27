@@ -6,9 +6,9 @@
 ## Units: A
 #########################################
 
-SEL1="segname PROA"
-SEL2="segname MUT"
-SEL_COMBINE="segname PROA MUT"
+SEL1="chain A"
+SEL2="chain B"
+SEL_COMBINE="chain A B"
 
 PDB="$1"
 TRJ="$2"
