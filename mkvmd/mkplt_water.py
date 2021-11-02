@@ -32,56 +32,6 @@ params = {
 mpl.rcParams.update(params)
 
 
-def customized_percentile(data):
-    quartile1, medians, quartile3 = np.percentile(data, [25, 50, 75], axis=0)
-    return quartile1, medians, quartile3
-
-def customized_violinplot(parts):
-    cmap = ['#353535','#3C6E71','#FFFFFF','#D9D9D9','#284B63']
-    for ii, pc in enumerate(parts['bodies']):
-        pc.set_facecolor(cmap[ii])
-        pc.set_edgecolor('black')
-        pc.set_alpha(.8)
-
-    parts['cmeans'].set_color('#D43F3A')
-    parts['cmeans'].set_lw(3)
-
-def customized_boxplot(parts):
-    cmap = ['#7e817f','#D6FFF6','#6B4FCF','#4DCCBD','#FF8484']
-    for ii, pc in enumerate(parts['boxes']):
-        pc.set_facecolor(cmap[ii])
-        pc.set_edgecolor('none')
-        pc.set_alpha(.5)
-
-def customized_bar(parts):
-    cmap = ['#D6FFF6','#6B4FCF','#4DCCBD','#FF8484']
-    for ii, pc in enumerate(parts.patches):
-        pc.set_facecolor(cmap[ii])
-        pc.set_edgecolor('none')
-        pc.set_alpha(.5)
-
-def add_whiskerbox(ax,data):
-    quartiles = np.array([
-        customized_percentile(column)
-        for column in data])
-    whiskers = np.array([
-        adjacent_values(sorted_array, q1, q3)
-        for sorted_array, q1, q3 in zip(data, quartiles[:,0], quartiles[:,2])])
-    whiskers_min, whiskers_max = whiskers[:, 0], whiskers[:, 1]
-
-    inds = np.arange(1, len(quartiles[:,1]) + 1)
-    ax.scatter(inds, quartiles[:,1], marker='o', color='white', s=30, zorder=3)
-    ax.vlines(inds, quartiles[:,0], quartiles[:,2], color='k', linestyle='-', lw=5)
-    ax.vlines(inds, whiskers_min, whiskers_max, color='k', linestyle='-', lw=1)
-
-def adjacent_values(vals, q1, q3):
-    upper_adjacent_value = q3 + (q3 - q1) * 1.5
-    upper_adjacent_value = np.clip(upper_adjacent_value, q3, vals[-1])
-
-    lower_adjacent_value = q1 - (q3 - q1) * 1.5
-    lower_adjacent_value = np.clip(lower_adjacent_value, vals[0], q1)
-    return lower_adjacent_value, upper_adjacent_value
-
 def set_axis_style(ax, labels):
     ax.xaxis.set_tick_params(direction='in')
     ax.xaxis.set_ticks_position('bottom')
@@ -114,7 +64,6 @@ cmd = ap.parse_args()
 
 reference = ['/data/kevin/sarscov2/7bwj/md/rbdace2/analysis/countWater/pf100ps/1.dat',
              '/data/kevin/sarscov2/7bwj/md/rbdace2/analysis/countWater/pf100ps/2.dat']
-reference = ['result-wt.dat']
 farray = [np.loadtxt(f, comments=['#','@']) for f in reference]
 dataref = np.concatenate(farray)
 # dataref = np.loadtxt(reference[1], comments=['#','@'])
@@ -128,16 +77,15 @@ np.nan_to_num(dataplot, nan=0)
 # /----------------------------------------------------/
 
 # create discrete colormap
-# cmap = colors.ListedColormap(['white', '#677E98',  '#338FCC', '#0016FF'])
 cmap = colors.ListedColormap(['red', 'white',  'white', '#0016FF'])
-bounds = [-10, -1, 1, 10]
+bounds = [-10, -3, 3, 10]
 norm = colors.BoundaryNorm(bounds, cmap.N)
 
 fig, ax = plt.subplots()
 im = ax.imshow(dataplot.transpose(), interpolation='gaussian', 
                                     cmap=cmap, norm=norm, 
                                     origin='lower', extent=[1,data.shape[0], 97,96+data.shape[1]],
-                                    aspect=2
+                                    aspect=1
                                     )
 
 cbar = plt.colorbar(im,
