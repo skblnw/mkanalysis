@@ -19,7 +19,7 @@ from argparse import RawDescriptionHelpFormatter
 
 ap = argparse.ArgumentParser(description=__doc__, formatter_class=RawDescriptionHelpFormatter)
 
-ap.add_argument('input', type=str, help='Filename')
+ap.add_argument('input', type=argparse.FileType('r'), nargs='+', help='Filename')
 ap.add_argument('--xlabel', type=str, help='X-axis label', nargs='?', default=' ')
 ap.add_argument('--ylabel', type=str, help='Y-axis label', nargs='?', default=' ')
 ap.add_argument('--title', type=str, help='Title label', nargs='?', default=' ')
@@ -29,13 +29,14 @@ io_group.add_argument('-o', '--output', type=str, help='PDF output file')
 io_group.add_argument('-i', '--interactive', action='store_true', 
                     help='Launches an interactive matplotlib session')
 
-
 cmd = ap.parse_args()
-data = np.loadtxt(cmd.input, comments=['#','@'])
-
 f = plt.figure(1)
 ax = plt.gca()
-ax.plot(data[:,0], data[:,1], lw=.5, c='#3fc07d')
+for file in cmd.input:
+    data = np.loadtxt(file, comments=['#','@'])
+    # ax.plot(data[:,0], data[:,1], lw=.5, c='#3fc07d')
+    ax.plot(data[:,0], data[:,1], lw=.5)
+
 plt.xlabel(cmd.xlabel)
 plt.ylabel(cmd.ylabel)
 plt.title(cmd.title)

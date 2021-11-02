@@ -25,8 +25,7 @@ if [ ! -f $REF ]; then
 fi
 
 
-echo "" > tcl
-cat >> tcl << EOF
+cat > tcl << EOF
 
 mol new $PDB waitfor all
 mol addfile $TRJ waitfor all

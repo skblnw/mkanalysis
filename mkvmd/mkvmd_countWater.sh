@@ -61,7 +61,7 @@ proc countWater { nn sel_input } {
 
 # Load your structure and frames
 mol new $PDB waitfor all
-mol addfile $TRJ waitfor all step 77
+mol addfile $TRJ waitfor all
 set total_frame [molinfo top get numframes]
 
 for {set nn 0} {\$nn < \$total_frame} {incr nn} {

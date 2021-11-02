@@ -31,7 +31,10 @@ params = {
    }
 mpl.rcParams.update(params)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8e973e9266a7d486f7a9bfe1d578aa867a1b73f7
 def set_axis_style(ax, labels):
     ax.xaxis.set_tick_params(direction='in')
     ax.xaxis.set_ticks_position('bottom')

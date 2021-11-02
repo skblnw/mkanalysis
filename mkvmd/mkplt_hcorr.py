@@ -61,23 +61,24 @@ cmd = ap.parse_args()
 # /            Read Data             /
 # /----------------------------------/
 
-reference = ['/data/kevin/sarscov2/7bwj/md/rbdace2/analysis/countHeavy/1.dat',
-             '/data/kevin/sarscov2/7bwj/md/rbdace2/analysis/countHeavy/2.dat']
-reference = ['result-wt-heavy.dat']
+reference = ['/data/kevin/sarscov2/7bwj/md/rbdace2/analysis/countWater/pf100ps/1.dat',
+             '/data/kevin/sarscov2/7bwj/md/rbdace2/analysis/countWater/pf100ps/2.dat']
 farray = [np.loadtxt(f, comments=['#','@']) for f in reference]
 dataref = np.concatenate(farray)
 # dataref = np.loadtxt(reference[1], comments=['#','@'])
 
 data = np.loadtxt(cmd.input, comments=['#','@'])
-dataplot = np.true_divide(np.subtract(data, dataref.mean(axis=0)), np.where(dataref.std(axis=0)<1, 1, dataref.std(axis=0)))
-np.nan_to_num(dataplot, nan=0)
+data_standardized = np.true_divide(np.subtract(data, dataref.mean(axis=0)), np.where(dataref.std(axis=0)<1, 1, dataref.std(axis=0)))
+np.nan_to_num(data_standardized, nan=0)
+
+corr = np.dot(data_standardized.T, data_standardized) / len(data_standardized)
 
 # /----------------------------------------------------/
 # /                     Plotting Area                  /
 # /----------------------------------------------------/
 
 # create discrete colormap
-cmap = colors.ListedColormap(['#59A65E', 'white',  'white', '#A659A1'])
+cmap = colors.ListedColormap(['red', 'white',  'white', '#0016FF'])
 bounds = [-10, -1, 1, 10]
 norm = colors.BoundaryNorm(bounds, cmap.N)
 
@@ -99,7 +100,7 @@ cbar.ax.tick_params(length=0, width=1)
 # ax.set_yticks(np.arange(333, 526, 100))
 # ax.set_yticks(np.arange(0, 40, 1));
 
-# ax.set_ylim(430, 515)
+# ax.set_ylim(170, 220)
 # ax.set_yticks(range(445,515,15))
 ax.set_xticks([])
 
