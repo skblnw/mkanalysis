@@ -76,7 +76,7 @@ for {set nn 0} {\$nn < \$total_frame} {incr nn} {
     # /--------------------------------------------------------------/
     # /                       Atom Selections                        /
     # /   You may use "...", e.g. "1 to 10", instead of one integer  /
-    # /          This determines <number of output files>            /
+    # /          This determines <number of output columns>            /
     # /--------------------------------------------------------------/
     foreach {sel_input} {"segname MUT"} {
         set outf [open $OUTPUT "a"]

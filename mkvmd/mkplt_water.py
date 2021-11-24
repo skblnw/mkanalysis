@@ -31,6 +31,10 @@ params = {
    }
 mpl.rcParams.update(params)
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 8e973e9266a7d486f7a9bfe1d578aa867a1b73f7
 def set_axis_style(ax, labels):
     ax.xaxis.set_tick_params(direction='in')
     ax.xaxis.set_ticks_position('bottom')
@@ -63,7 +67,6 @@ cmd = ap.parse_args()
 
 reference = ['/data/kevin/sarscov2/7bwj/md/rbdace2/analysis/countWater/pf100ps/1.dat',
              '/data/kevin/sarscov2/7bwj/md/rbdace2/analysis/countWater/pf100ps/2.dat']
-reference = ['result-wt.dat']
 farray = [np.loadtxt(f, comments=['#','@']) for f in reference]
 dataref = np.concatenate(farray)
 # dataref = np.loadtxt(reference[1], comments=['#','@'])
@@ -78,14 +81,14 @@ np.nan_to_num(dataplot, nan=0)
 
 # create discrete colormap
 cmap = colors.ListedColormap(['red', 'white',  'white', '#0016FF'])
-bounds = [-10, -1, 1, 10]
+bounds = [-10, -3, 3, 10]
 norm = colors.BoundaryNorm(bounds, cmap.N)
 
 fig, ax = plt.subplots()
 im = ax.imshow(dataplot.transpose(), interpolation='gaussian', 
                                     cmap=cmap, norm=norm, 
                                     origin='lower', extent=[1,data.shape[0], 97,96+data.shape[1]],
-                                    aspect=2
+                                    aspect=1
                                     )
 
 cbar = plt.colorbar(im,
