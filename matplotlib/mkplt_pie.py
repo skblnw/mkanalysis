@@ -36,7 +36,7 @@ data = []
 for file in cmd.input:
     tmp = np.loadtxt(file, comments=['#','@'])
     # ax.plot(data[:,0], data[:,1], lw=.5, c='#3fc07d')
-    data.append(tmp[:25])
+    data.append(tmp[-25:])
 data=np.concatenate(data)
 prop = [np.mean(data, axis=0)[1:]]
 prop = np.append(prop, 1-np.sum(np.mean(data,axis=0)[1:]))
@@ -49,7 +49,7 @@ print('No interaction: %.2f' % prop[3])
 
 labels = ['H-bond', '1 Water', '2 Waters', 'No interaction']
 explode = (0.1, 0.1, 0.1, 0)
-colors = ['#8F91A2','#DCEDFF','#94B0DA','#505A5B']
+colors = ['#DB5461','#DCEDFF','#94B0DA','#505A5B']
 
 wedges, texts = ax.pie(prop.tolist(), 
                                     colors=colors, 

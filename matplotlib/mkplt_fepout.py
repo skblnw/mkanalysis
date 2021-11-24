@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -116,16 +117,16 @@ data_plot = np.empty(0, dtype=float)
 
 # datapoints = list(range(1,4))+list(range(6,12))+list(range(13,18))+[19,20]
 # datapoints = [1,2,3,11,12,13]
-datapoints = range(1,31)
+datapoints = range(1,16)
 
 for ii in datapoints:
 
     filename = str(ii)
 
     tmp = np.loadtxt(filename, comments=['#','@'])
-    data_plot = np.append(data_plot, tmp[-1,3])
+    data_plot = np.append(data_plot, tmp[-1,-1])
     # ax1twin.bar(tmp[:,1], tmp[:,2])
-    ax1.plot(tmp[:,1], tmp[:,3], linewidth=2, marker="o")
+    ax1.plot(tmp[:,1], tmp[:,-1], linewidth=2, marker="o")
 
 ax1twin.set_yticks([])
 
