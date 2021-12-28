@@ -1,0 +1,47 @@
+#!/bin/zsh
+
+cat > iplist <<EOF
+6
+13
+14
+24
+63
+80
+81
+85
+88
+89
+223
+233
+25
+50
+188
+55
+
+64
+65
+66
+70
+56
+
+57
+58
+59
+60
+61
+62
+
+209
+210
+211
+EOF
+
+printf "%3s%10s%10s%10s\n" IP Root Home Data
+for ii in `cat iplist`; do
+  ssh zju$ii "df -h" > tmp${ii}
+  printf "%3d " $ii
+  printf "%10s" `grep "/$" tmp${ii} | awk '{print $5"|"$2}'`
+  printf "%10s" `grep "/home" tmp${ii} | awk '{print $5"|"$2}'`
+  printf "%10s\n" `grep "/data" tmp${ii} | awk '{print $5"|"$2}'`
+done
+rm tmp*

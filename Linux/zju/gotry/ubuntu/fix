@@ -1,0 +1,5 @@
+update-locale LC_ALL=en_US.UTF-8
+PORT=606
+sed -i 's/^#Port.*/Port 606/g' /etc/ssh/sshd_config
+sed -i 's/^#AddressFamily.*/AddressFamily inet/g' /etc/ssh/sshd_config
+systemctl restart sshd

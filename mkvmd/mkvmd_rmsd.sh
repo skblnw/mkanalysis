@@ -1,5 +1,5 @@
 #!/bin/bash
-# KevC @ 2019
+# Kev @ 2019
 # Bash script to calculate RMSD profile
 
 PDB="$1"
@@ -38,12 +38,17 @@ EOF
 for ii in {0..0}
 do
     jj=$(($ii+1))
+    if [[ $jj -eq 1 ]]; then
+        outname="rmsd"
+    else
+        outname="rmsd${jj}"
+    fi
     cat >> tcl << EOF
 set sel_ref0 [atomselect 1 "${SELREF[$ii]}" frame 0]
 set sel_ref [atomselect 0 "${SELREF[$ii]}"]
 set sel_rmsd0 [atomselect 1 "${SELRMSD[$ii]}" frame 0]
 set sel_rmsd [atomselect 0 "${SELRMSD[$ii]}"]
-set outfile [open "$jj.dat" "w"]
+set outfile [open "$outname" "w"]
 for {set i 0} {\$i<\$num_frames} {incr i} {
     \$sel_all frame \$i
     \$sel_ref frame \$i
@@ -64,4 +69,4 @@ EOF
 
 vmd -dispdev text -e tcl
 
-rm -f tcl
+rm tcl

@@ -1,0 +1,32 @@
+[root@localhost hahaha]# ll
+total 2792
+-rw-r--r--. 1 hezhi hezhi      6 May 26 09:17 ?
+-rwxr--r--. 1 hezhi hezhi    168 May 26 06:55 auto
+-rwxr-xr-x. 1 hezhi hezhi  22360 May 26 06:23 cleaner
+-rwxr-xr-x. 1 hezhi hezhi   1741 May 26 06:55 config.json
+-rwxr-xr-x. 1 hezhi hezhi    367 May 13 00:59 create
+-rwxr-xr-x. 1 hezhi hezhi  14240 May 26 06:55 hide
+-rwxr-xr-x. 1 hezhi hezhi   2054 May 26 09:22 logs
+-r-xr-xr-x. 1 hezhi hezhi      0 May 26 06:22 lvmetad
+-rwxr-xr-x. 1 hezhi hezhi      0 May 26 06:24 mailx
+-rwxr-xr-x. 1 hezhi hezhi    138 Oct  8  2020 mining
+lrwxrwxrwx. 1 hezhi hezhi     22 May 26 06:48 nc -> /etc/alternatives/nmap
+-rwxr-xr-x. 1 hezhi hezhi 964608 May 26 06:21 nologin
+-rwxr-xr-x. 1 hezhi hezhi  37920 May 26 06:55 power-on
+-rw-r--r--. 1 hezhi hezhi      6 May 26 09:17 ra.pid
+-rwxr-xr-x. 1 hezhi hezhi      0 May 26 06:22 rsyslogd
+-rwxr-xr-x. 1 hezhi hezhi      6 May 26 09:21 save
+-rwxr-xr-x. 1 hezhi hezhi  52000 May 26 06:24 scp
+-rwxr-xr-x. 1 hezhi hezhi      0 May 26 06:24 send-mail
+-rwxr-xr-x. 1 hezhi hezhi  80808 May 26 06:24 sftp
+lrwxrwxrwx. 1 hezhi hezhi      5 May 26 06:24 slogin -> ./ssh
+-rwxr-xr-x. 1 hezhi hezhi 279736 May 26 06:24 ssh
+-rwxr-xr-x. 1 hezhi hezhi  98392 May 26 06:24 ssh-add
+-rwxr-xr-x. 1 hezhi hezhi  81240 May 26 06:24 ssh-agent
+-rw-------. 1 hezhi hezhi   3907 May 26 06:24 sshd_configold
+-rwxr-xr-x. 1 hezhi hezhi 853040 May 26 06:24 sshdold
+-rwxr-xr-x. 1 hezhi hezhi 123288 May 26 06:24 ssh-keygen
+-rwxr-xr-x. 1 hezhi hezhi 164296 May 26 06:24 ssh-keyscan
+-rwxr-xr-x. 1 hezhi hezhi     35 May 26 06:55 start
+-rwxr-xr-x. 1 hezhi hezhi     35 May 25 17:59 starting
+-rwxr-xr-x. 1 hezhi hezhi   8704 May 26 06:24 unreadsnf

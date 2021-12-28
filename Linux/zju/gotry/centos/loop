@@ -1,0 +1,48 @@
+cat > namelist <<EOF
+tanhaojing
+EOF
+
+for ii in `cat namelist`; do
+if ! null=`grep $ii /etc/passwd`; then
+useradd $ii
+echo "1st-time-$ii" | passwd --stdin "$ii"
+chage -d 0 $ii
+mkdir /data/$ii
+chmod 700 /data/$ii
+chown $ii:$ii /data/$ii
+ln -s /data/$ii /home/$ii/data
+fi
+mkdir -p /home/$ii/.ssh && chmod 700 /home/$ii/.ssh
+cat > /home/$ii/.ssh/authorized_keys << 'EOF'
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGk4SHmOVgQrY8HmsmXbYf/N8EibNWYw84vAjNnaGxVE4gCu2FBJEg4cXyw6klbdKd4oJ+G48bATHWgdxmHuNJWrMe8jZUgDtX/zIIZ0JIjZS94I8/sRB5BPVd4vcw/1ZZofMT1UcSsBdm4kLgl2paErH9RtPF+f88bLFkmSNjjNKwpRf3Mz3uG0c6kjtG/REzWMpsLX6y2HxCIaDpaSMdRQy58zo6jWmcA3JA2rnYtFmTzE8EGDwTF+oZtTA9xoBpsrbc6kyc9I/JW7cUgP7L3awNeR1YwL0oLhqVGZ9RaVG+YxFhTiCRHZ/bTBB+LGwhpzhGavxihdSqRto68WMt iqb20210526
+EOF
+chmod 600 /home/$ii/.ssh/authorized_keys
+chown -R $ii:$ii /home/$ii/.ssh
+cat > /home/$ii/.bashrc << 'EOF'
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+
+# Uncomment the following line if you don't like systemctl's auto-paging feature:
+# export SYSTEMD_PAGER=
+
+# User specific aliases and functions
+
+#GCC 11.1.0
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/gcc/11.1.0/lib64/
+#Gromacs Environment
+source /opt/gromacs/2020.6/bin/GMXRC.bash
+#NAMD Environment
+export PATH=/opt/namd/3.0alpha9/:$PATH
+#VMD Environment
+export PATH=/opt/vmd/1.9.4/:$PATH
+EOF
+#echo -e "\n#GCC 11.1.0\nexport LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:/opt/gcc/11.1.0/lib64/\n" >> /home/$ii/.bashrc
+#echo -e "#Gromacs Environment\nsource /opt/gromacs/2020.6/bin/GMXRC.bash\n" >> /home/$ii/.bashrc
+#echo -e "#NAMD Environment\nexport PATH=/opt/namd/3.0alpha9/:\$PATH\n" >> /home/$ii/.bashrc
+#echo -e "#VMD Environment\nexport PATH=/opt/vmd/1.9.4/:\$PATH\n" >> /home/$ii/.bashrc
+done
+rm namelist

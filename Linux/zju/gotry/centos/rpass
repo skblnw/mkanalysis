@@ -1,0 +1,3 @@
+ii=`ifconfig | grep 10.77.14 | awk '{print $2}' | awk -F. '{print $4}'`
+echo $ii
+echo 7TxDzUvM9XnHTgQZWTgg${ii}qkNVhYSyzH6Ee5ODqdUC | passwd --stdin root

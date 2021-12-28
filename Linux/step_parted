@@ -1,0 +1,5 @@
+lsblk
+parted /dev/sda mklabel gpt
+parted -a opt /dev/sda mkpart primary ext4 0% 100%
+lsblk
+mkfs.ext4 -L <disk_name> /dev/sda1

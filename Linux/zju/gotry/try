@@ -1,0 +1,40 @@
+cat > iplist <<EOF
+6
+13
+14
+24
+63
+80
+81
+85
+88
+89
+98
+223
+233
+227
+25
+50
+188
+55
+
+64
+65
+66
+70
+56
+
+57
+58
+59
+60
+61
+62
+
+209
+210
+211
+EOF
+
+for ii in `cat iplist`; do echo $ii; ssh zju$ii "ls ~|grep bmk"; done
+rm iplist

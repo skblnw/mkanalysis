@@ -1,0 +1,4 @@
+rm -f *.tar.gz *.tar *.tgz *.zip *.rpm linux*.sh user*.txt *.pub utopia zju rpasswd setup reset
+rm -rf fftw-* gcc-* gromacs-* vmd-* CMake-* __MACOSX
+mkdir -p install
+mv NVIDIA-* cuda_* install/

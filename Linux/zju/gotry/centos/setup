@@ -1,0 +1,54 @@
+rm /etc/localtime && ln -s /usr/share/zoneinfo/Asia/Hong_Kong /etc/localtime
+PORT=606
+firewall-cmd --permanent --add-port $PORT/tcp
+semanage port -a -t ssh_port_t -p tcp $PORT
+sed -i 's/^#Port.*/Port 606/g' /etc/ssh/sshd_config
+sed -i 's/^#AddressFamily.*/AddressFamily inet/g' /etc/ssh/sshd_config
+sed -i 's/^#PermitRootLogin.*/PermitRootLogin prohibit-password/g' /etc/ssh/sshd_config
+systemctl restart sshd
+systemctl restart firewalld
+mkdir -p ~/.ssh && chmod 700 ~/.ssh
+cat > ~/.ssh/authorized_keys << 'EOF'
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDPtZxwQRrJEzUX9DjFsXmAC1SDbAN+jCl/API4/vHqcowJ6PGaTGQ9fklBBIoWOdZRNEJQhUlrAoj7nEAjM5Mpu0DuGUCjfN3XRjtaR+8EZ4VGAyHmIXB68eDsvPGk94ZTIKtPJod/zd5QsaDqAZdOA1sko4q71A78Mau6oFJuoFR77LTSdAw7LUvDhcU2Aebp2pofgvrkfmvuMciT4ltP7HBni2KaZFRj/FK62zA1/5zYA5uE1c6lAsWf7b6IO/me8hjX2Yf/2WuQ9his22feG4KipxFc+GJeuLdBFLEYdPo3CiwTCumswN82a5Z0+N1guKTok5GX+EAwHno3benTe2ERmAOZVg2A4VVeEPYvsG+z8ai9RPzMhZX6OlRH2/skndpGBodQlRitTMJHyBddmiYrqhjsljaL2jfc2AyhtFJtZju6tUozv+obV6WF9M1+YwbqSPh5iXxQ7QwKO92127NCR5Zxi8/vZJ+ZRFhP88zPD/G9qLnfyoa6DQDrZEFgDXb+2D8w9FkC3BZL5HO/1L3YXAidKkSdD25p5Qx34QIRH7f2giZBlQ+9OHcwxy4Yzg181pDkVOVb74gXs5gM74aVzIewvEjhWP+8zPqqRs+st7/q/YnwujawdhU99/W4lS1dLCeNSKWooYlZUMyHqVO/Okj065OP9ZviE7n8CQ== iqb20210526
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC7xfkkw85DCdbaqkjTxiFYxyDQXjciPTkVYzdrKqaWGWp0UwSU8Y/yA4DTwY7F0m+ApGBjs4EGlTsJIP05FPQt+me98zXmKrF+6NFRHnMGclhT8gzat4vbbGOPfAJglr2X+rIcOLtEtaXAIfyzWFUHR//cco60YpfDfu9qeFLSvjN4GpMcvWVLqLX+xDUBZXmVGskJ+ZDGmYgyFzulWEGsvJIMTz9MCSEA1NeBLKPBgPGq0ZBP7S4deepS0uP2rcg4h6bFT76YjCXuluE+F6o5Lgf4cH8VHUZDITU5onAfgAWqddDC8B66LsBPjeElxKnQQiPgznBb7wfnYWWKro5UMeYSZrMyr5LzYLxkCmwoHxBm1amPm1/VBuo6hKX1rBjCKzMoVShpca4p/FGs2IYgTWUqNRXT5kCrYWzrctNr/8M8uCeYAc/yTYmBUeHgJmwf3aXUHMvldz2jokoCXptWn6/zY/HBPRHswCy3F+sWTND+M1OFKeWTpeHI1T6V6+w1t1qmo+4ivntrWUOu08IVQphCoTuEnl8mGVmIgEEyYgBzMgHi8w4E4Rwj+fRAhJGkEnk6K3r71koZ0BLiydSqpS6BYLHN3MOCF7PYge3jMmKQE+GJTJ7s4s6kluebgLa9S7B+9sZ9L/hAyeTpFi7OG1fF96dyL3iuSWKIEMYSgQ== skblnw
+EOF
+chmod 600 ~/.ssh/authorized_keys
+cat > ~/watcher << 'EOF'
+#!/bin/bash
+total=0
+totalsuccess=0
+dd=`date -d '-0 day' +'%b %_d'`
+success=`last | grep "${dd}" | wc -l`
+failure=`lastb | grep "${dd}" | wc -l`
+total=`expr $total + $success + $failure`
+totalsuccess=`expr $totalsuccess + $success`
+dd=`date -d '-1 day' +'%b %_d'`
+success=`last | grep "${dd}" | wc -l`
+failure=`lastb | grep "${dd}" | wc -l`
+total=`expr $total + $success + $failure`
+totalsuccess=`expr $totalsuccess + $success`
+dd=`date -d '-2 day' +'%b %_d'`
+success=`last | grep "${dd}" | wc -l`
+failure=`lastb | grep "${dd}" | wc -l`
+total=`expr $total + $success + $failure`
+totalsuccess=`expr $totalsuccess + $success`
+binchange=`find /usr/bin/ -mtime -1 | wc -l`
+sbinchange=`find /usr/sbin/ -mtime -1 | wc -l`
+susptotal=0
+susp=`ps aux | grep send-mail | wc -l`
+susp=`expr $susp - 1`
+susptotal=`expr $susptotal + $susp`
+susp=`ps aux | grep sendmail | wc -l`
+susp=`expr $susp - 1`
+susptotal=`expr $susptotal + $susp`
+susp=`ps aux | grep -i cron | wc -l`
+susp=`expr $susp - 2`
+susptotal=`expr $susptotal + $susp`
+echo -e "# 'Login in Past 3 days'\t'Changes in 24 hrs'\t'Suspecious Running'"
+echo -e "# 'Success/Total'\t\tbin\tsbin"
+echo -e "\t${totalsuccess}/${total}\t\t\t${binchange}\t${sbinchange}\t\t${susptotal}"
+EOF
+chmod +x ~/watcher
+sed -i 's/^\*.*log//g' /etc/crontab
+echo "* * * * * root ~/watcher > /home/kevin/log" >> /etc/crontab
+systemctl restart crond

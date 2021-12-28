@@ -1,0 +1,39 @@
+cat > ~/watcher << 'EOF'
+#!/bin/bash
+total=0
+totalsuccess=0
+dd=`date -d '-0 day' +'%b %_d'`
+success=`last | grep "${dd}" | wc -l`
+failure=`lastb | grep "${dd}" | wc -l`
+total=`expr $total + $success + $failure`
+totalsuccess=`expr $totalsuccess + $success`
+dd=`date -d '-1 day' +'%b %_d'`
+success=`last | grep "${dd}" | wc -l`
+failure=`lastb | grep "${dd}" | wc -l`
+total=`expr $total + $success + $failure`
+totalsuccess=`expr $totalsuccess + $success`
+dd=`date -d '-2 day' +'%b %_d'`
+success=`last | grep "${dd}" | wc -l`
+failure=`lastb | grep "${dd}" | wc -l`
+total=`expr $total + $success + $failure`
+totalsuccess=`expr $totalsuccess + $success`
+binchange=`find /usr/bin/ -mtime -1 | wc -l`
+sbinchange=`find /usr/sbin/ -mtime -1 | wc -l`
+susptotal=0
+susp=`ps aux | grep send-mail | wc -l`
+susp=`expr $susp - 1`
+susptotal=`expr $susptotal + $susp`
+susp=`ps aux | grep sendmail | wc -l`
+susp=`expr $susp - 1`
+susptotal=`expr $susptotal + $susp`
+susp=`ps aux | grep -i cron | wc -l`
+susp=`expr $susp - 2`
+susptotal=`expr $susptotal + $susp`
+echo -e "# 'Login in Past 3 days'\t'Changes in 24 hrs'\t'Suspecious Running'"
+echo -e "# 'Success/Total'\t\tbin\tsbin"
+echo -e "\t${totalsuccess}/${total}\t\t\t${binchange}\t${sbinchange}\t\t${susptotal}"
+EOF
+chmod +x ~/watcher
+sed -i 's/^\*.*log//g' /etc/crontab
+echo "* * * * * root ~/watcher > /home/kevin/log" >> /etc/crontab
+systemctl restart cron

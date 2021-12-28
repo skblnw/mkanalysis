@@ -1,0 +1,15 @@
+tar xzf NAMD_2.15alpha1_Source.tar.gz
+cd NAMD_2.15alpha1_Source
+tar xf charm-6.10.2.tar
+cd charm-6.10.2
+./build charm++ multicore-linux-x86_64 --with-production
+tar xzf fftw-linux-x86_64.tar.gz
+mv linux-x86_64 fftw
+tar xzf tcl8.5.9-linux-x86_64.tar.gz
+tar xzf tcl8.5.9-linux-x86_64-threaded.tar.gz
+mv tcl8.5.9-linux-x86_64 tcl
+mv tcl8.5.9-linux-x86_64-threaded tcl-threaded
+# Add "-no-pie" to CXXOPTS
+./config Linux-x86_64-g++ --charm-arch multicore-linux-x86_64
+cd Linux-x86_64-g++
+make -j32

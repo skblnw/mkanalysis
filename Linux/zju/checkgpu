@@ -1,0 +1,47 @@
+#!/bin/bash
+
+cat > iplist <<EOF
+14
+16
+24
+63
+80
+81
+85
+88
+98
+186
+188
+223
+227
+233
+25
+50
+55
+
+64
+65
+66
+70
+56
+57
+58
+59
+60
+61
+62
+
+209
+210
+211
+212
+213
+EOF
+
+echo " IP Usage"
+for ii in `cat iplist`; do
+  printf "%3d " $ii
+  ssh zju$ii "nvidia-smi|grep Default" > tmp$ii
+  echo `awk -F'|' '{print $4}' tmp$ii | awk '{print $1}' | tr '\n' ' '`
+done
+rm tmp*

@@ -1,0 +1,26 @@
+cat > namelist <<EOF
+kevin
+zhangd
+fengmei
+yerui
+xieteng
+zhangmj
+songyi
+suxc
+menglj
+hezhi
+alcohol
+suyx
+fuyyzju
+yanlei
+huangjx
+htzhang
+flei
+aodong
+laoyc
+EOF
+
+for ii in `cat namelist`; do
+echo $ii
+done
+rm namelist
