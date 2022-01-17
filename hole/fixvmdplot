@@ -1,0 +1,8 @@
+#!/bin/bash
+
+sph_process -dotden 15 -color out.sph dotsurface.qpt
+
+qpt_conv
+
+sed -e "s/draw materials off/draw material AOChalky/g" \
+    -e "s/draw point {\([^}]*\)}.*/draw sphere {\1} radius .1/g" dotsurface.vmd_plot > out.vmd_plot
