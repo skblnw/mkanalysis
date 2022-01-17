@@ -1,5 +1,15 @@
 #!/bin/bash
 
+[ $# -ne 1 ] && { echo "mkhole> Usage: $0 <pdb>"; exit 1; }
+
+cat >> hole.inp << EOF
+coord $1
+radius radius
+cvect 0.0 0.0 1.0
+sphpdb out.sph
+endrad 10
+EOF
+
 cat > radius <<'EOF'
 remark: Input file for program Tooshort.
 remark: Contains bond and vdw radius records for
@@ -64,18 +74,10 @@ VDWR H??? ??? 1.00
 VDWR P??? ??? 2.10
 EOF
 
-cat >> hole.inp << EOF
-coord .pdb
-radius radius
-cvect 0.0 0.0 1.0
-sphpdb out.sph
-endrad 10
-EOF
-
 echo "> Doing HOLE computation"
 
 hole <hole.inp> out.txt
 egrep "mid-|sampled" out.txt | awk '{print $1" "$2}' > formatted.dat
 
 echo "> Done. Results are named formatted.dat."
-rm radius
+rm radius out.sph
