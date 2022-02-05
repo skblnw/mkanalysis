@@ -8,7 +8,6 @@ proc signed_angle { a b c } {
   set amag [veclength $a]
   set bmag [veclength $b]
   set dotprod [vecdot $a $b]
-
   set crossp [veccross $a $b]
   set sign [vecdot $crossp $c]
   if { $sign < 0 } {
@@ -16,5 +15,5 @@ proc signed_angle { a b c } {
   } else {
     set sign 1
   }
-  return [expr $sign * 57.2958 * acos($dotprod / ($amag * $bmag))]
+  return [expr $sign * (180.0/$M_PI) * acos($dotprod / ($amag * $bmag))]
 }
