@@ -1,3 +1,4 @@
+#!/bin/bash
 #########################################
 ## Description: Main body of a "boss run" VMD/tcl measure script
 ## Author: 

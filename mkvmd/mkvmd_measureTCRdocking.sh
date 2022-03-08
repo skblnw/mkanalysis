@@ -7,14 +7,21 @@
 ## Units: A
 #########################################
 
-SEL1="segname ANTI"
-SEL2="segname PROA PROB"
-SEQUENCE="1 2 3 4 5 6 7 8 9"
+# Selections for disulfite in alpha (SEL1) and beta (SEL2) chain of TCR
+SEL1="segname PROD and resid 89 to 93 and resname CYS and name CA"
+SEL2="segname PROE and resid 89 to 93 and resname CYS and name CA"
+# Selection for MHC alpha-helices
+# Conventonally residues A:50 to 86 140 to 176 for MHC-I
+# Conventonally residues A46 to 78, B:54 to 64 67 to 91 for MHC-II
+# SEL4 is the peptide
+SEL3="segname PROA and resid 50 to 86 140 to 176"
+# SEL3="segname PROA and resid 46 to 78 or segname PROB and resid 54 to 64 67 to 91"
+SEL4="segname PROC"
 
 PDB="$1"
 TRJ="$2"
 OUTPUT="$3"
-[ $# -ne 3 ] && { echo -e "mkvmd> Usage: $0 [PDB] [TRJ] [OUTPUT]\n       By default, the selections are:\n       Selection 1: $SEL1\n       Selection 2: $SEL2\n       Selection combined: $SEL_COMBINE"; exit 1; }
+[ $# -ne 3 ] && { echo -e "mkvmd> Usage: $0 [PDB] [TRJ] [OUTPUT]\n       By default, the selections are:\n       Selection 1: $SEL1\n       Selection 2: $SEL2\n       Selection 3: $SEL3"; exit 1; }
 
 if [ ! -f $PDB ]; then
     echo -e "$PDB \nStructure not found!"
@@ -38,16 +45,23 @@ proc angle { a b } {
 }
 
 proc measureTCRDocking {nn} {
-  set sel1 [atomselect top "segname PROD and resid 24 90" frame \$nn]
-  set sel2 [atomselect top "segname PROE and resid 25 93" frame \$nn]
-  set tcr [vecsub [measure center \$sel1 weight mass] [measure center \$sel2 weight mass]]
+  set sel1 [atomselect top "$SEL1" frame \$nn]
+  set sel2 [atomselect top "$SEL2" frame \$nn]
+  set tcr [vecsub [measure center \$sel2 weight mass] [measure center \$sel1 weight mass]]
 
-  set sel3 [atomselect top "segname PROA and resid 50 to 86 140 to 176" frame \$nn]
+  set sel3 [atomselect top "$SEL3" frame \$nn]
   set mhc [lindex [Orient::calc_principalaxes \$sel3] 2]
+
+  set sel4 [atomselect top "$SEL4" frame \$nn]
+  set vec [vecsub [lindex [\$sel4 get {x y z}] end] [lindex [\$sel4 get {x y z}] 0]]
+  if { [angle \$mhc \$vec] > 90 } {
+    set mhc [vecinvert \$mhc]
+  }
 
   \$sel1 delete
   \$sel2 delete
   \$sel3 delete
+  \$sel4 delete
   return [format "%.2f" [angle \$tcr \$mhc]]
 }
 

@@ -1,3 +1,4 @@
+#!/bin/bash
 #########################################
 ## Description: Main body of a "boss run" VMD/tcl measure script
 ## Author: 
@@ -6,7 +7,7 @@
 ## Units: A
 #########################################
 
-SEL1="segname ANTI"
+SEL1="segname PROC"
 SEL2="segname PROA PROB"
 SEQUENCE="1 2 3 4 5 6 7 8 9"
 

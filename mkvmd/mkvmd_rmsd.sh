@@ -5,9 +5,10 @@
 PDB="$1"
 TRJ="$2"
 REF="$3"
-SELREF=("chain B and name CA")
-SELRMSD=("chain A and name CA")
-[ $# -eq 0 ] && { echo "mkvmd> Usage: $0 [PDB] [TRJ] [REF]"; echo "mkvmd> By default, the selection is '$SELRMSD'"; exit 1; }
+OUTPUT="$4"
+SELREF=("segname PROA and name CA")
+SELRMSD=("{segname PROA and backbone and resid 423 to 538 564 to 640 710 to 746 766 to 807} or {segname PROP and backbone and resid 1042 to 1174 1204 to 1233 1256 to 1300}")
+[ $# -ne 4 ] && { echo "mkvmd> Usage: $0 [PDB] [TRJ] [REF] [OUTPUT]"; echo "mkvmd> By default, the selection is '$SELRMSD'"; exit 1; }
 
 if [ ! -f $PDB ]; then
     echo -e "$PDB \nStructure not found!"
@@ -26,29 +27,16 @@ fi
 
 
 cat > tcl << EOF
-
 mol new $PDB waitfor all
 mol addfile $TRJ waitfor all
 set num_frames [molinfo top get numframes]
 set sel_all [atomselect top all]
 mol new $REF waitfor all
-
-EOF
-
-for ii in {0..0}
-do
-    jj=$(($ii+1))
-    if [[ $jj -eq 1 ]]; then
-        outname="rmsd"
-    else
-        outname="rmsd${jj}"
-    fi
-    cat >> tcl << EOF
-set sel_ref0 [atomselect 1 "${SELREF[$ii]}" frame 0]
-set sel_ref [atomselect 0 "${SELREF[$ii]}"]
-set sel_rmsd0 [atomselect 1 "${SELRMSD[$ii]}" frame 0]
-set sel_rmsd [atomselect 0 "${SELRMSD[$ii]}"]
-set outfile [open "$outname" "w"]
+set sel_ref0 [atomselect 1 "${SELREF}" frame 0]
+set sel_ref [atomselect 0 "${SELREF}"]
+set sel_rmsd0 [atomselect 1 "${SELRMSD}" frame 0]
+set sel_rmsd [atomselect 0 "${SELRMSD}"]
+set outfile [open "$OUTPUT" "w"]
 for {set i 0} {\$i<\$num_frames} {incr i} {
     \$sel_all frame \$i
     \$sel_ref frame \$i
@@ -58,12 +46,6 @@ for {set i 0} {\$i<\$num_frames} {incr i} {
     puts \$outfile "\$i \t \$rmsd"
 }
 close \$outfile
-
-EOF
-
-done
-
-cat >> tcl << 'EOF'
 quit
 EOF
 
