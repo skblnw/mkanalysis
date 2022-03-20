@@ -57,7 +57,6 @@ for {set nn 0} {\$nn < \$total_frame} {incr nn} {
     set out_line [format "%d" \$nn]
     # Definition of segments
     # This determines number of columns in one output file
-    set total_area_buried 0
     foreach {seg1 seg2} {1 1} {
         # Call calc funtion you like
         lappend out_line []

@@ -7,13 +7,19 @@
 ## Units: A
 #########################################
 
-SELTEXT1="segname PROA and resid 423 to 433"
-SELTEXT2="segname PROP and resid 1286 to 1300"
+SELTEXT1b="segname PROA and resid 436 to 449"
+SELTEXT1="segname PROA and resid 423 to 434"
+SELTEXT2="segname PROP and resid 1284 to 1300"
+SELTEXT2b="segname PROP and resid 1046 to 1054"
+SELTEXT2c="segname PROP and resid 1269 to 1284"
+
+CUTOFF=5
 
 PDB="$1"
 TRJ="$2"
 OUTPUT="$3"
-[ $# -ne 3 ] && { echo "mkvmd> Usage: $0 [PDB] [TRJ] [OUTPUT]"; echo "SEL1: $SELTEXT1; SEL2: $SELTEXT2"; exit 1; }
+REF="$4"
+[ $# -ne 4 ] && { echo "mkvmd> Usage: $0 [PDB] [TRJ] [OUTPUT] [REF]"; exit 1; }
 
 if [ ! -f $PDB ]; then
     echo -e "$PDB \nStructure not found!"
@@ -25,17 +31,28 @@ if [ ! -f $TRJ ]; then
     exit 0
 fi
 
+if [ ! -f $REF ]; then
+    echo -e "$REF \nTrajectory not found!"
+    exit 0
+fi
+
 rm $OUTPUT
 cat > tcl << EOF
-proc countHbonds {nn} {
-    set sel1 [atomselect top "${SELTEXT1} and {backbone or name H}" frame \$nn]
-    set sel2 [atomselect top "${SELTEXT2} and {backbone or name H}" frame \$nn]
-    set count1 [llength [lindex [measure hbonds 3.5 30 \$sel1 \$sel2] 0]]
-    set count2 [llength [lindex [measure hbonds 3.5 30 \$sel2 \$sel1] 0]]
-    \$sel1 delete
-    \$sel2 delete
 
-    return [expr \$count1 + \$count2]
+proc countNativeContact { nn sel1 sel2 ref } {
+    set sel [atomselect top "noh \$sel2 and same residue as {within $CUTOFF of {\$sel1}}" frame \$nn]
+
+    foreach ii [\$ref get resid] { set tarRes(\$ii) 1 }
+
+    set count 0
+    foreach res [\$sel get resid] {
+        if [info exist tarRes(\$res)] {
+            incr count
+        }
+    }
+    
+    set total [llength [ \$ref get resid ]]
+    return [format "%4.2f" [expr {\$count / (\$total + 0.0)}]]
 }
 
 # /------------------/
@@ -52,6 +69,13 @@ proc countHbonds {nn} {
 # Load packages for calculating principle axis if needed
 # package require Orient 
 # namespace import Orient::orient 
+
+# Load your reference structure
+mol new $REF waitfor all
+set region1 [atomselect top "noh $SELTEXT1b and same residue as {within $CUTOFF of {$SELTEXT1}}"]
+set region2a [atomselect top "noh $SELTEXT2 and same residue as {within $CUTOFF of {$SELTEXT1}}"]
+set region2b [atomselect top "noh $SELTEXT2b and same residue as {within $CUTOFF of {$SELTEXT2}}"]
+set region3 [atomselect top "noh $SELTEXT2c and same residue as {within $CUTOFF of {$SELTEXT2}}"]
 
 # Load your structure and frames
 mol new $PDB waitfor all
@@ -76,7 +100,7 @@ for {set nn 0} {\$nn < \$total_frame} {incr nn} {
     foreach {sel_input1} {1} {sel_input2} {1} {
         set outf [open $OUTPUT "a"]
         # Write to file
-        puts \$outf "[format "%d" \$nframe] [countHbonds \$nn]"
+        puts \$outf "[format "%d" \$nframe] [countNativeContact \$nn "$SELTEXT1" "$SELTEXT1b" \$region1] [countNativeContact \$nn "$SELTEXT1" "$SELTEXT2" \$region2a] [countNativeContact \$nn "$SELTEXT2" "$SELTEXT2b" \$region2b] [countNativeContact \$nn "$SELTEXT2" "$SELTEXT2c" \$region3]"
         # Remember to close the file
         close \$outf
     }

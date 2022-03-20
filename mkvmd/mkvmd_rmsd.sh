@@ -4,11 +4,14 @@
 
 PDB="$1"
 TRJ="$2"
-REF="$3"
-OUTPUT="$4"
-SELREF=("segname PROA and name CA")
+OUTPUT="$3"
+REF="$4"
+# if [ ! -n "$REF" ]; then
+#     REF="$PDB"
+# fi
+SELREF=("segname PROA and name CA and resid 423 to 538 564 to 640 710 to 746 766 to 807")
 SELRMSD=("{segname PROA and backbone and resid 423 to 538 564 to 640 710 to 746 766 to 807} or {segname PROP and backbone and resid 1042 to 1174 1204 to 1233 1256 to 1300}")
-[ $# -ne 4 ] && { echo "mkvmd> Usage: $0 [PDB] [TRJ] [REF] [OUTPUT]"; echo "mkvmd> By default, the selection is '$SELRMSD'"; exit 1; }
+[ $# -eq 0 ] && { echo "mkvmd> Usage: $0 [PDB] [TRJ] [OUTPUT] [REF]"; echo "mkvmd> By default, the selection is '$SELRMSD'"; exit 1; }
 
 if [ ! -f $PDB ]; then
     echo -e "$PDB \nStructure not found!"
