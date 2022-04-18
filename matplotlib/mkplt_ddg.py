@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 
+import os
+import glob
+from pathlib import Path
 import numpy as np
 import matplotlib as mpl
 import matplotlib.style
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import cm
 plt.rcParams['axes.linewidth'] = 1
-plt.rcParams['figure.dpi'] = 300
+plt.rcParams['figure.dpi'] = 100
 plt.rcParams['figure.figsize'] = [6, 4]
 font = {'family': 'sans-serif',
         'sans-serif': 'Arial',
@@ -18,10 +21,10 @@ cmap = cm.get_cmap('Set1')
 
 
 def customized_boxplot(parts):
-    cmap = ['g','#F6C344']
+    # cmap = ['g','#F6C344']
     # cmap = cm.get_cmap('Set1')
     for ii, pc in enumerate(parts['boxes']):
-        pc.set_facecolor(cmap[ii])
+        pc.set_facecolor(cmap(ii))
         pc.set_edgecolor('none')
         pc.set_alpha(.5)
 
@@ -30,7 +33,6 @@ from argparse import RawDescriptionHelpFormatter
 
 ap = argparse.ArgumentParser(description=__doc__, formatter_class=RawDescriptionHelpFormatter)
 
-ap.add_argument('input', type=str, help='Filename')
 ap.add_argument('--xlabel', type=str, help='X-axis label', nargs='?', default=' ')
 ap.add_argument('--ylabel', type=str, help='Y-axis label', nargs='?', default=' ')
 ap.add_argument('--title', type=str, help='Title label', nargs='?', default=' ')
@@ -41,21 +43,27 @@ io_group.add_argument('-i', '--interactive', action='store_true',
                     help='Launches an interactive matplotlib session')
 cmd = ap.parse_args()
 
-
-
-datapoints = {
-    'heavy': cmd.input,
-    'light': cmd.input
-}
+prefix_list = ['free', 'bound']
+trial_list = "trial[0-9]*"
 
 data = []
-for ii, (label, values) in enumerate(datapoints.items()):
-    print(ii, label, values)
-    tmp = np.loadtxt(values, comments=['#','@'])[20:,ii+2]
-    print('Sample Size: %d' % np.size(tmp))
-    print('Mean: %.2f' % tmp.mean())
-    print('SEM: %.2f' % np.std(tmp, ddof=1))
-    data.append(tmp)
+for prefix in prefix_list:
+    data_violin = np.empty(0, dtype=float)
+    for trial in sorted(glob.glob(prefix+'/'+trial_list)):
+        if Path(trial).is_dir():
+            # data_profile = np.loadtxt(trial+"/fepout", comments=['#','@'])
+            data_violin = np.append(data_violin, np.loadtxt(trial+"/fepout", comments=['#','@'])[-1,-1])
+        else:
+            print(trial+' does not have fepout!')
+            quit()
+    print('Sample Size: %d' % np.size(data_violin))
+    print('Mean: %.2f' % np.mean(data_violin))
+    print('s.d.: %.2f' % np.std(data_violin, ddof=1))
+    data.append(data_violin)
+
+print('')
+print('ddG: %.2f' % ( np.mean(data[1])-np.mean(data[0]) ))
+print('SE: %.2f' % ( np.sqrt(np.std(data[0], ddof=1)*np.std(data[0], ddof=1) / np.size(data[0]) + np.std(data[1], ddof=1)*np.std(data[1], ddof=1) / np.size(data[1]))))
 
 fig, ax = plt.subplots()
 parts = ax.boxplot(data,
@@ -70,7 +78,8 @@ parts = ax.boxplot(data,
     medianprops = dict(ls='-', lw=2, color='#7d758a'))
 
 # ax.set_xlim([0,180])
-ax.set_ylim([-5,240])
+# ax.set_ylim([274,286])
+# ax.set_ylim([-274,-286])
 # ax.set_xticks([])
 # ax.set_yticks([])
 
