@@ -7,7 +7,7 @@
 ## Units: A
 #########################################
 
-SEL1="segname PROC"
+SEL1="segname PEPT"
 SEL2="segname PROA PROB"
 SEQUENCE="1 2 3 4 5 6 7 8 9"
 
@@ -103,7 +103,7 @@ for {set nn 0} {\$nn < \$total_frame} {incr nn} {
       puts "Total Buried=\$total_area_buried"
       # Write to file
       puts \$outf1 "\$out_line1"
-      puts \$outf2 "\$out_line2"
+      puts \$outf2 "\$out_line2 \$total_area_buried"
       # Remember to close the file
       close \$outf1
       close \$outf2

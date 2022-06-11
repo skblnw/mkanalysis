@@ -31,8 +31,6 @@ fi
 
 rm ${OUTPUT}
 cat > tcl << EOF
-proc 
-
 # /------------------/
 # /     Main Body    /
 # /------------------/

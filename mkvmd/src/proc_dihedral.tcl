@@ -8,7 +8,6 @@ proc signed_angle { a b c } {
   set amag [veclength $a]
   set bmag [veclength $b]
   set dotprod [vecdot $a $b]
-  
   set crossp [veccross $a $b]
   set sign [vecdot $crossp $c]
   if { $sign < 0 } { 
