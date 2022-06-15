@@ -2,7 +2,7 @@
 #########################################
 ## Description: Main body of a "boss run" VMD/tcl measure script
 ## Author: 
-##         Kev (cchan2242-c@my.cityu.edu.hk) Dec 2015
+##         Kevin C. Chan (work@skblnw.com) Feb 2022
 ## Usage: understand, modify and source it!
 ## Units: A
 #########################################
