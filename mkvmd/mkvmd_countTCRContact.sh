@@ -37,7 +37,7 @@ proc countTCRContact { nn sel_input } {
     set dlist {3.5 4 4.5}
     set count 0
     foreach dd \$dlist {
-        set selheavy [atomselect top "noh and $SEL and same residue as within \$dd of \$sel_input" frame \$nn]
+        set selheavy [atomselect top "noh $SEL and within \$dd of \$sel_input" frame \$nn]
         incr count [\$selheavy num]
         \$selheavy delete
     }

@@ -53,5 +53,4 @@ quit
 EOF
 
 vmd -dispdev text -e tcl
-
 rm tcl
