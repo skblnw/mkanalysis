@@ -61,6 +61,7 @@ data = [data for xx in data_raw for data in xx]
 
 npa = np.array(data, dtype='float')
 new = npa.reshape(size,size)
+np.savetxt('tmp', np.mean(new[118:122,:], axis=0))
 
 # /----------------------------------------------------/
 # /                     Plotting Area                  /
@@ -73,10 +74,10 @@ im = ax.imshow(new,
                 origin='lower',
                 extent=[resid_start,resid_start-1+size,resid_start,resid_start-1+size])
 
-ax.set_xlim(430, 515)
-ax.set_ylim(430, 515)
-ax.set_xticks(range(445,515,15))
-ax.set_yticks(range(445,515,15))
+# ax.set_xlim(430, 515)
+# ax.set_ylim(430, 515)
+# ax.set_xticks(range(445,515,15))
+# ax.set_yticks(range(445,515,15))
 
 cbar = plt.colorbar(im,
                     ticks=[.4,.6,.8,1],
