@@ -74,7 +74,7 @@ for {set nn 0} {\$nn < \$total_frame} {incr nn} {
     # This determines number of columns in one output file
     # Write to file
     puts \$outf "\$out_line [countIntramolContact \$nn "noh $SEL1 and sidechain"]"
-    puts \$outf2 "\$out_line [countIntramolContact \$nn "$SEL1 and sidechain and name \"C.*\""]"
+    puts \$outf2 "\$out_line [countIntramolContact \$nn "$SEL1 and sidechain and name \"C.*\" \"S.*\""]"
     puts \$outf3 "\$out_line [countIntramolContact \$nn "$SEL1 and sidechain and name \"O.*\" \"N.*\""]"
     # Remember to close the file
     close \$outf
