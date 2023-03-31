@@ -19,15 +19,13 @@ TRJ="$2"
 OUTPUT="$3"
 [ $# -ne 3 ] && { echo -e "mkvmd> Usage: $0 [PDB] [TRJ] [OUTPUT]\n       By default, the selections are:\n       Selection 1: $SEL1\n       Selection 2: $SEL2"; exit 1; }
 
-if [ ! -f $PDB ]; then
-    echo -e "$PDB \nStructure not found!"
-    exit 0
-fi
-
-if [ ! -f $TRJ ]; then
-    echo -e "$TRJ \nTrajectory not found!"
-    exit 0
-fi
+files=("$PDB" "$TRJ")
+for file in "${files[@]}"; do
+    if [ ! -f "$file" ]; then
+        echo -e "$file \nStructure not found!"
+        exit 1
+    fi
+done
 
 rm ${OUTPUT}
 cat > tcl << EOF

@@ -1,26 +1,23 @@
 #!/bin/bash
 # KevC @ 2019 @ OSU
 # Bash script to calculate distance between two residues
-source ~/.zshrc
+
+[ $# -eq 0 ] && { echo "mkvmd> Usage: $0 [PDB] [TRJ] [PREFIX] [-i|-r] [Selection 1] [Selection 2]"; exit 1; }
 
 PDB="$1"
 TRJ="$2"
-OUTPUT="$3"
+PREFIX="$3"
 OPT="$4"
 SEL1="$5"
 SEL2="$6"
-[ $# -ne 6 ] && { echo "mkvmd> Usage: $0 [PDB] [TRJ] [-i|-r] [Selection 1] [Selection 2]"; echo "mkvmd> By default, the selection is 'protein and resid ${sel_input1} and name CA'"; exit 1; }
 
-
-if [ ! -f $PDB ]; then
-    echo -e "$PDB \nStructure not found!"
-    exit 0
-fi
-
-if [ ! -f $TRJ ]; then
-    echo -e "$TRJ \nTrajectory not found!"
-    exit 0
-fi
+files=("$PDB" "$TRJ")
+for file in "${files[@]}"; do
+    if [ ! -f "$file" ]; then
+        echo -e "$file \nStructure not found!"
+        exit 1
+    fi
+done
 
 cat > tcl << EOF
 proc calc_dist {nn sel_input1 sel_input2} {
@@ -32,6 +29,10 @@ proc calc_dist {nn sel_input1 sel_input2} {
     \$sel2 delete
     return \$res
 }
+set molnum [mol new $PDB waitfor all]
+mol addfile $TRJ waitfor all
+set total_frame [molinfo \$molnum get numframes]
+set outf [open "${PREFIX}" w]
 EOF
 
 case $OPT in
@@ -39,21 +40,14 @@ case $OPT in
         SELTEXT1="protein and resid $SEL1 and name CA"
         SELTEXT2="protein and resid $SEL2 and name CA"
         cat >> tcl <<EOF
-set molnum [mol new $PDB waitfor all]
-mol addfile $TRJ waitfor all
-set total_frame [molinfo \$molnum get numframes]
-set outf [open dist w]
-for {set nn 0} {\$nn < \$total_frame} {incr nn} {puts \$outf "[expr \$nn + 1] [calc_dist \$nn]"}
+for {set nn 0} {\$nn < \$total_frame} {incr nn} {puts \$outf "\$nn [calc_dist \$nn \"$SELTEXT1\" \"$SELTEXT2]\""}
 close \$outf
 quit
 EOF
     ;;
     -i)
         cat >> tcl <<EOF
-set molnum [mol new $PDB waitfor all]
-mol addfile $TRJ waitfor all
-set total_frame [molinfo \$molnum get numframes]
-set outf [open "$OUTPUT" w]
+puts \$outf "# option: $OPT; selection 1: $SEL1; selection 2: $SEL2"
 for {set nn 0} {\$nn < \$total_frame} {incr nn} {
     set out_line [format "%d" \$nn]
     foreach {idx1} {$SEL1} {idx2} {$SEL2} {

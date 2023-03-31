@@ -6,24 +6,22 @@
 ## Units: A
 #########################################
 
-SEL1="chain A"
-SEL2="chain B"
-SEL_COMBINE="chain A B"
+SEL1="chain C"
+SEL2="chain A B"
+SEL_COMBINE="chain A B C"
 
 PDB="$1"
 TRJ="$2"
 OUTPUT="$3"
 [ $# -ne 3 ] && { echo -e "mkvmd> Usage: $0 [PDB] [TRJ] [OUTPUT]\n       By default, the selections are:\n       Selection 1: $SEL1\n       Selection 2: $SEL2\n       Selection combined: $SEL_COMBINE"; exit 1; }
 
-if [ ! -f $PDB ]; then
-    echo -e "$PDB \nStructure not found!"
-    exit 0
-fi
-
-if [ ! -f $TRJ ]; then
-    echo -e "$TRJ \nTrajectory not found!"
-    exit 0
-fi
+files=("$PDB" "$TRJ")
+for file in "${files[@]}"; do
+    if [ ! -f "$file" ]; then
+        echo -e "$file \nStructure not found!"
+        exit 1
+    fi
+done
 
 rm $OUTPUT
 cat > tcl << EOF

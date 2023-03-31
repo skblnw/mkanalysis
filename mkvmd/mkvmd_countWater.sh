@@ -11,53 +11,54 @@ TRJ="$2"
 OUTPUT="$3"
 [ $# -ne 3 ] && { echo "mkvmd> Usage: $0 [PDB] [TRJ] [OUTPUT]"; exit 1; }
 
-if [ ! -f $PDB ]; then
-    echo -e "$PDB \nStructure not found!"
-    exit 0
-fi
+files=("$PDB" "$TRJ")
+for file in "${files[@]}"; do
+    if [ ! -f "$file" ]; then
+        echo -e "$file \nStructure not found!"
+        exit 1
+    fi
+done
 
-if [ ! -f $TRJ ]; then
-    echo -e "$TRJ \nTrajectory not found!"
-    exit 0
-fi
+# SELTEXT="segname PROA and resid 56 to 89 137 to 177 and resname ARG LYS GLU ASP"
+SELTEXT="segname PROC"
+SELTEXT_OF_WATER="name OW OH2"
 
-rm $OUTPUT
+rm ${OUTPUT}_w ${OUTPUT}_hb
 cat > tcl << EOF
-proc countWater { nn sel_input } {
-    set sel [atomselect top "\$sel_input"]
-    puts "Selected [llength [lsort -unique -integer [\$sel get residue]]] residues"
-
-    set nlist []
-    set dlist {3 3.5 4}
-    foreach ii [lsort -unique -integer [\$sel get residue]] {
-        set tmplist 0
+proc countWater { nn reslist } {
+    set list_water []
+    set list_hbonds []
+    set dlist {3 3.5}
+    foreach ii \$reslist {
+        set count 0
         foreach dd \$dlist {
-            set selwater [atomselect top "name OH2 OW and within \$dd of residue \$ii" frame \$nn]
-            incr tmplist [\$selwater num]
+            set selwater [atomselect top "${SELTEXT_OF_WATER} and within \$dd of residue \$ii" frame \$nn]
+            incr count [\$selwater num]
         }
-        lappend nlist [expr \$tmplist / [llength \$dlist]]
+        lappend list_water [expr \$count / [llength \$dlist]]
+
+        set count 0
+        foreach dd \$dlist {
+            set sel1 [atomselect top "residue \$ii and sidechain" frame \$nn]
+            set sel2 [atomselect top "${SELTEXT_OF_WATER} and within \$dd of residue \$ii" frame \$nn]
+            set count1 [llength [lindex [measure hbonds \$dd 20 \$sel1 \$sel2] 0]]
+            set count2 [llength [lindex [measure hbonds \$dd 20 \$sel2 \$sel1] 0]]
+            incr count [expr \$count1 + \$count2]
+        }
+        lappend list_hbonds [expr \$count / [llength \$dlist]]
     }
     
-    set total 0
-    foreach nxt \$nlist { incr total \$nxt }
-    puts "Total number of water: \$total"
-    return \$nlist
+    set total1 0
+    set total2 0
+    foreach nxt \$list_water { incr total1 \$nxt }
+    foreach nxt \$list_hbonds { incr total2 \$nxt }
+    puts "Total number of water: \$total1. Total number of h-bonds: \$total2."
+    return [list \$list_water \$list_hbonds]
 }
 
 # /------------------/
 # /     Main Body    /
 # /------------------/
-
-# /---------------------------------------------------------------------------------/
-# /  Deleting existing files as we APPEND instead of trashing and opening new files /
-# /---------------------------------------------------------------------------------/
-# eval file delete [glob output/*.dat]
-# set OUTPUT_DIR [exec date +%Y%m%d%H%M%S]
-# exec mkdir -p \$OUTPUT_DIR
-
-# Load packages for calculating principle axis if needed
-# package require Orient 
-# namespace import Orient::orient 
 
 # Load your structure and frames
 mol new $PDB waitfor all
@@ -70,21 +71,39 @@ for {set nn 0} {\$nn < \$total_frame} {incr nn} {
     # /-------------------------------------------------/
     # /     Where you really have to use your brain     /
     # /-------------------------------------------------/
-    # Uncomment these two lines if you need PA
-    # set selref [atomselect top "protein and name CA" frame \$nn]
-    # set Iref [Orient::calc_principalaxes \$selref]
     # /--------------------------------------------------------------/
     # /                       Atom Selections                        /
     # /   You may use "...", e.g. "1 to 10", instead of one integer  /
     # /          This determines <number of output columns>            /
     # /--------------------------------------------------------------/
-    foreach {sel_input} {"segname MUT"} {
-        set outf [open $OUTPUT "a"]
-        # Write to file
-        puts \$outf [countWater \$nn \$sel_input]
-        # Remember to close the file
-        close \$outf
+    set outf1 [open ${OUTPUT}_w "a"]
+    set outf2 [open ${OUTPUT}_hb "a"]
+
+    set out_line1 [format "%d" \$nframe]
+    set out_line2 [format "%d" \$nframe]
+
+    set sel [atomselect top "${SELTEXT}"]
+    set reslist [lsort -unique -integer [\$sel get residue]]
+    if { \$nn == 0 } {
+        puts "Selected [llength \$reslist] residues"
+        set out_line0 "nframe "
+        foreach ii \$reslist {
+            set sel [atomselect top "residue \$ii and name CA"]
+            lappend out_line0 "[\$sel get resname][\$sel get resid]"
+        }
+        puts \$outf1 "\$out_line0"
+        puts \$outf2 "\$out_line0"
     }
+
+    set output [countWater \$nn \$reslist]
+    foreach ii [lindex \$output 0] {lappend out_line1 \$ii}
+    foreach ii [lindex \$output 1] {lappend out_line2 \$ii}
+
+    puts \$outf1 "\$out_line1"
+    puts \$outf2 "\$out_line2"
+    # Remember to close the file
+    close \$outf1
+    close \$outf2
 }
 quit
 EOF

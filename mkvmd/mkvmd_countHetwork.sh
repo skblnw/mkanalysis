@@ -11,17 +11,15 @@ TRJ="$2"
 OUTPUT="$3"
 [ $# -ne 3 ] && { echo "mkvmd> Usage: $0 [PDB] [TRJ] [OUTPUT]"; exit 1; }
 
-if [ ! -f $PDB ]; then
-    echo -e "$PDB \nStructure not found!"
-    exit 0
-fi
+files=("$PDB" "$TRJ")
+for file in "${files[@]}"; do
+    if [ ! -f "$file" ]; then
+        echo -e "$file \nStructure not found!"
+        exit 1
+    fi
+done
 
-if [ ! -f $TRJ ]; then
-    echo -e "$TRJ \nTrajectory not found!"
-    exit 0
-fi
-
-SELTEXT1="chain A"
+SELTEXT1="segname PROC"
 SELTEXT2="name OW"
 
 rm $OUTPUT

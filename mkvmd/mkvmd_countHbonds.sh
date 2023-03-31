@@ -7,29 +7,27 @@
 ## Units: A
 #########################################
 
-SELTEXT1="segname PROA and resid 423 to 433"
-SELTEXT2="segname PROP and resid 1286 to 1300"
+SELTEXT1="segname PROC and resid 3 4 5 6 7"
+SELTEXT2="name OW"
 
 PDB="$1"
 TRJ="$2"
 OUTPUT="$3"
 [ $# -ne 3 ] && { echo "mkvmd> Usage: $0 [PDB] [TRJ] [OUTPUT]"; echo "SEL1: $SELTEXT1; SEL2: $SELTEXT2"; exit 1; }
 
-if [ ! -f $PDB ]; then
-    echo -e "$PDB \nStructure not found!"
-    exit 0
-fi
-
-if [ ! -f $TRJ ]; then
-    echo -e "$TRJ \nTrajectory not found!"
-    exit 0
-fi
+files=("$PDB" "$TRJ")
+for file in "${files[@]}"; do
+    if [ ! -f "$file" ]; then
+        echo -e "$file \nStructure not found!"
+        exit 1
+    fi
+done
 
 rm $OUTPUT
 cat > tcl << EOF
 proc countHbonds {nn} {
-    set sel1 [atomselect top "${SELTEXT1} and {backbone or name H}" frame \$nn]
-    set sel2 [atomselect top "${SELTEXT2} and {backbone or name H}" frame \$nn]
+    set sel1 [atomselect top "${SELTEXT1} and not backbone" frame \$nn]
+    set sel2 [atomselect top "${SELTEXT2}" frame \$nn]
     set count1 [llength [lindex [measure hbonds 3.5 30 \$sel1 \$sel2] 0]]
     set count2 [llength [lindex [measure hbonds 3.5 30 \$sel2 \$sel1] 0]]
     \$sel1 delete
@@ -41,17 +39,6 @@ proc countHbonds {nn} {
 # /------------------/
 # /     Main Body    /
 # /------------------/
-
-# /------------------------------------------------/
-# / Deleting existing files as we APPEND instead of trashing and opening new files
-# /------------------------------------------------/
-# eval file delete [glob output/*.dat]
-# set OUTPUT_DIR [exec date +%Y%m%d%H%M%S]
-# exec mkdir -p \$OUTPUT_DIR
-
-# Load packages for calculating principle axis if needed
-# package require Orient 
-# namespace import Orient::orient 
 
 # Load your structure and frames
 mol new $PDB waitfor all
@@ -65,9 +52,6 @@ for {set nn 0} {\$nn < \$total_frame} {incr nn} {
     # /------------------------------------------------/
     # /     Where you really have to use your brain    /
     # /------------------------------------------------/
-    # Uncomment these two lines if you need PA
-    # set selref [atomselect top "protein and name CA" frame \$nn]
-    # set Iref [Orient::calc_principalaxes \$selref]
     # /------------------------------------------------/
     # /                 Atom Selections
     # / You may use "...", e.g. "1 to 10", instead of one integer
@@ -86,4 +70,4 @@ quit
 EOF
 
 vmd -dispdev text -e tcl
-rm -f tcl
+rm tcl

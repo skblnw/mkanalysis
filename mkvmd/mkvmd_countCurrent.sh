@@ -34,12 +34,12 @@ proc countCurrency { nn jj } {
     set region_new [atomselect top "noh $SELTEXT1b and same residue as {within $CUTOFF of {$SELTEXT1}}" frame \$nn]
 
     foreach ii [\$region_old get resid] { set tarRes(\$ii) 1 }
-        set count 0
-        foreach res [\$region_new get resid] {
-            if { ![info exist tarRes(\$res)] } {
-                puts \$res
-                puts [\$res get {x y z}]
-            }
+    set count 0
+    foreach res [\$region_new get resid] {
+        if { ![info exist tarRes(\$res)] } {
+            puts \$res
+            puts [\$res get {x y z}]
+        }
     }
 
     set total [llength [ \$ref get resid ]]

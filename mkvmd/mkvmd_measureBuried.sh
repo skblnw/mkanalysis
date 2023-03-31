@@ -7,24 +7,22 @@
 ## Units: A
 #########################################
 
-SEL1="segname PEPT"
+SEL1="segname PROC"
 SEL2="segname PROA PROB"
 SEQUENCE="1 2 3 4 5 6 7 8 9"
 
 PDB="$1"
 TRJ="$2"
 OUTPUT="$3"
-[ $# -ne 3 ] && { echo -e "mkvmd> Usage: $0 [PDB] [TRJ] [OUTPUT]\n       By default, the selections are:\n       Selection 1: $SEL1\n       Selection 2: $SEL2\n       Selection combined: $SEL_COMBINE"; exit 1; }
+[ $# -ne 3 ] && { echo -e "mkvmd> Usage: $0 [PDB] [TRJ] [OUTPUT]\n       By default, the selections are:\n       Selection 1: $SEL1\n       Selection 2: $SEL2"; exit 1; }
 
-if [ ! -f $PDB ]; then
-    echo -e "$PDB \nStructure not found!"
-    exit 0
-fi
-
-if [ ! -f $TRJ ]; then
-    echo -e "$TRJ \nTrajectory not found!"
-    exit 0
-fi
+files=("$PDB" "$TRJ")
+for file in "${files[@]}"; do
+    if [ ! -f "$file" ]; then
+        echo -e "$file \nStructure not found!"
+        exit 1
+    fi
+done
 
  # and not name CA C N O HN HA
 
@@ -49,18 +47,6 @@ proc measureBuried { nn resid } {
 # /------------------/
 # /     Main Body    /
 # /------------------/
-
-# !!!Important!!!
-# Deleting existing files as we APPEND instead of trashing and opening new files
-# Make sure you will delete all the existing files
-# !!!Important!!!
-# eval file delete [glob output/*.dat]
-# set OUTPUT_DIR [exec date +%Y%m%d%H%M%S]
-# exec mkdir -p $OUTPUT_DIR
-
-# Load packages for calculating principle axis (if needed)
-#package require Orient 
-#namespace import Orient::orient 
 
 mol new $PDB waitfor all
 mol addfile $TRJ waitfor all
