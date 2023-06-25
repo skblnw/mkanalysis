@@ -8,7 +8,7 @@
 #########################################
 
 SEL_PEPTIDE="segname PROC"
-SEL_HLA="segname PROA"
+SEL_HLA="segname PROA and resid 1 to 180"
 
 PDB="$1"
 TRJ="$2"
@@ -27,11 +27,12 @@ fi
 
  # and not name CA C N O HN HA
 
-echo "pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9," > ${OUTPUT}_sideheavy.csv
+echo "pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9," > ${OUTPUT}_mainnp.csv
+echo "pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9," > ${OUTPUT}_mainp.csv
 echo "pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9," > ${OUTPUT}_sidenp.csv
 echo "pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9," > ${OUTPUT}_sidep.csv
 cat > tcl << EOF
-proc countIntramolContact { nn sel_input } {
+proc countIntermolContact { nn sel_input } {
     set sel [atomselect top "$SEL_PEPTIDE"]
     set reslist [lsort -unique -integer [\$sel get residue]]
     if {\$nn == 0} {
@@ -43,7 +44,7 @@ proc countIntramolContact { nn sel_input } {
     foreach ii \$reslist {
         set tmplist 0
         foreach dd \$dlist {
-            set selheavy [atomselect top "\$sel_input and not residue \$ii and within \$dd of {residue \$ii and sidechain}" frame \$nn]
+            set selheavy [atomselect top "\$sel_input and not residue \$ii and within \$dd of {residue \$ii}" frame \$nn]
             incr tmplist [\$selheavy num]
         }
         lappend output [expr \$tmplist / [llength \$dlist]]
@@ -71,14 +72,16 @@ for {set nn 0} {\$nn < \$total_frame} {incr nn} {
     # /------------------------------------------------/
 
     # Output file name
-    set outf1 [open ${OUTPUT}_sideheavy.csv "a"]
-    set outf2 [open ${OUTPUT}_sidenp.csv "a"]
-    set outf3 [open ${OUTPUT}_sidep.csv "a"]
+    set outf1 [open ${OUTPUT}_mainnp.csv "a"]
+    set outf2 [open ${OUTPUT}_mainp.csv "a"]
+    set outf3 [open ${OUTPUT}_sidenp.csv "a"]
+    set outf4 [open ${OUTPUT}_sidep.csv "a"]
 
     # Call calc funtion you like
-    set output1 [countIntramolContact \$nn "noh $SEL_PEPTIDE and sidechain"]
-    set output2 [countIntramolContact \$nn "$SEL_PEPTIDE and sidechain and name \"C.*\" \"S.*\""]
-    set output3 [countIntramolContact \$nn "$SEL_PEPTIDE and sidechain and name \"O.*\" \"N.*\""]
+    set output1 [countIntermolContact \$nn "$SEL_HLA and backbone and name \"C.*\""]
+    set output2 [countIntermolContact \$nn "$SEL_HLA and backbone and name \"O.*\" \"N.*\""]
+    set output3 [countIntermolContact \$nn "$SEL_HLA and sidechain and name \"C.*\" \"S.*\""]
+    set output4 [countIntermolContact \$nn "$SEL_HLA and sidechain and name \"O.*\" \"N.*\""]
 
     # Write to file
     foreach element \$output1 {puts -nonewline \$outf1 "\$element,"}
@@ -87,15 +90,14 @@ for {set nn 0} {\$nn < \$total_frame} {incr nn} {
     puts \$outf2 ""
     foreach element \$output3 {puts -nonewline \$outf3 "\$element,"}
     puts \$outf3 ""
-
-    # puts \$outf "\$out_line [countIntramolContact \$nn "noh $SEL_PEPTIDE and sidechain"]"
-    # puts \$outf2 "\$out_line [countIntramolContact \$nn "$SEL_PEPTIDE and sidechain and name \"C.*\" \"S.*\""]"
-    # puts \$outf3 "\$out_line [countIntramolContact \$nn "$SEL_PEPTIDE and sidechain and name \"O.*\" \"N.*\""]"
+    foreach element \$output4 {puts -nonewline \$outf4 "\$element,"}
+    puts \$outf4 ""
 
     # Remember to close the file
     close \$outf1
     close \$outf2
     close \$outf3
+    close \$outf4
 }
 
 quit
