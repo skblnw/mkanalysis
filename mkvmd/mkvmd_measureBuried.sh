@@ -29,7 +29,8 @@ done
 rm ${OUTPUT}_area ${OUTPUT}_perc
 cat > tcl << EOF
 proc measureBuried { nn resid } {
-    set rest [atomselect top "$SEL1 and resid \$resid and not name CA C N O HN HA HT1 HT2 HT3 OT1 OT2" frame \$nn]
+    # set rest [atomselect top "$SEL1 and resid \$resid and not name CA C N O HN HA HT1 HT2 HT3 OT1 OT2" frame \$nn]
+    set rest [atomselect top "$SEL1 and resid \$resid and sidechain" frame \$nn]
     set selpep [atomselect top "$SEL1" frame \$nn]
     set selall [atomselect top "$SEL1 or $SEL2" frame \$nn]
     set percent_buried [format "%.2f" [expr 1 - [measure sasa 1.4 \$selall -restrict \$rest] / [measure sasa 1.4 \$selpep -restrict \$rest]]]
@@ -89,7 +90,8 @@ for {set nn 0} {\$nn < \$total_frame} {incr nn} {
       puts "Total Buried=\$total_area_buried"
       # Write to file
       puts \$outf1 "\$out_line1"
-      puts \$outf2 "\$out_line2 \$total_area_buried"
+      puts \$outf2 "\$out_line2"
+      # puts \$outf2 "\$out_line2 \$total_area_buried"
       # Remember to close the file
       close \$outf1
       close \$outf2
