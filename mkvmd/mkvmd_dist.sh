@@ -49,7 +49,7 @@ EOF
         cat >> tcl <<EOF
 puts \$outf "# option: $OPT; selection 1: $SEL1; selection 2: $SEL2"
 for {set nn 0} {\$nn < \$total_frame} {incr nn} {
-    set out_line [format "%d" \$nn]
+    set out_line ""
     foreach {idx1} {$SEL1} {idx2} {$SEL2} {
         lappend out_line [calc_dist \$nn "index \$idx1" "index \$idx2"]
     }
