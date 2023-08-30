@@ -10,7 +10,7 @@ def moving_average(data, window_size=5):
     """
     return np.convolve(data, np.ones(window_size)/window_size, mode='valid')
 
-def plot_dih_angles(csv_file, save_as_tiff=False, tiff_filename="output.tiff", show_fitting=True):
+def plot_dih_angles(csv_file, data_type="value", save_as_tiff=False, tiff_filename="output.tiff", show_fitting=True):
     """
     Plot dih angles from a CSV file.
     """
@@ -19,6 +19,9 @@ def plot_dih_angles(csv_file, save_as_tiff=False, tiff_filename="output.tiff", s
     fig, ax = plt.subplots(1, 2, figsize=(15, 6))
 
     cmap = plt.get_cmap("tab20")
+
+    # Determine the range based on data_type
+    y_min, y_max = (0, 360) if data_type == "angle" else (data.min().min(), data.max().max())
 
     for idx, col in enumerate(data.columns):
         ax[0].plot(data[col], alpha=0.1, color=cmap(idx))
@@ -29,7 +32,7 @@ def plot_dih_angles(csv_file, save_as_tiff=False, tiff_filename="output.tiff", s
     ax[0].set_title('Profiles with Moving Average')
     ax[0].set_xlabel('Number of Frames')
     ax[0].set_ylabel('Value')
-    ax[0].set_ylim([0, 360])
+    ax[0].set_ylim([y_min, y_max])
 
     for idx, col in enumerate(data.columns):
         column_data = data[col].dropna()
@@ -41,12 +44,12 @@ def plot_dih_angles(csv_file, save_as_tiff=False, tiff_filename="output.tiff", s
             p = norm.pdf(y, mu, std)
             ax[1].plot(p * (xmax-xmin) + xmin, y, 'k', linewidth=2)
 
-        ax[1].hist(column_data, bins=50, density=True, alpha=0.6, range=(0, 360), label=f"dih {idx}", orientation='horizontal', color=cmap(idx))
+        ax[1].hist(column_data, bins=50, density=True, alpha=0.6, range=(y_min, y_max), label=f"dih {idx}", orientation='horizontal', color=cmap(idx))
 
     ax[1].set_title('Histograms with Fitted Distribution')
     ax[1].set_ylabel('Value')
     ax[1].set_xlabel('Density')
-    ax[1].set_ylim([0, 360])
+    ax[1].set_ylim([y_min, y_max])
     fig.suptitle(f"{data.shape[1]} dih angles", fontsize=16)
 
     plt.tight_layout()
@@ -59,6 +62,7 @@ def plot_dih_angles(csv_file, save_as_tiff=False, tiff_filename="output.tiff", s
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Plot dih angles from a CSV file.')
     parser.add_argument('csv_file', type=str, help='Path to the input CSV file.')
+    parser.add_argument('--data-type', type=str, choices=['angle', 'value'], default='value', help='Type of data in the CSV file. Either "angle" or "value".')
     parser.add_argument('--output', type=str, default=None, help='Name of the TIFF file to save the plot.')
     parser.add_argument('--no-fitting', action='store_true', help='Do not show normal fitting on histograms.')
     args = parser.parse_args()

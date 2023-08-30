@@ -103,6 +103,34 @@ def compute_outlier_percentage(data, late_fraction=0.1):
     
     return results
 
+def compute_success_percentage(data, threshold=4):
+    """
+    Compute the success percentage for each data point in a trajectory.
+
+    Parameters:
+    - data: DataFrame containing the monitored values in the trajectory.
+    - threshold: Threshold for the monitored values.
+
+    Returns:
+    - List of tuples with frame numbers and their corresponding success percentages.
+    """
+
+    # List to store results
+    results = []
+
+    # Iterate over data points
+    for i in range(len(data)):  # Start from 10 to ensure meaningful analysis
+        cumulative_data = data.iloc[i:].values.flatten()
+
+        # Count successes (values below threshold)
+        success_count = np.sum(cumulative_data < threshold)
+
+        # Compute success percentage
+        percentage = (success_count / len(cumulative_data)) * 100
+        results.append((i, percentage))
+
+    return results
+
 def exponential_smoothing(data, alpha=0.1, threshold=0.01):
     """
     Apply exponential smoothing to a dataset.
@@ -145,46 +173,43 @@ def determine_convergence_ks(frames, data, threshold_value, threshold_type='valu
                 return frame
     return None
 
-def determine_convergence_box(frames, data, threshold_value, threshold_type='value', activation_threshold=5, late_fraction=0.05):
+def determine_convergence(frames, data, threshold_type='value', threshold=90, stability_frames=5):
     """
-    Determine the frame where data reaches a given threshold.
+    Determine the frame where data reaches a given threshold and remains stable for a certain number of frames.
     
     Parameters:
     - frames: List of frame numbers.
     - data: List of data values (smoothed percentages or p-values).
-    - threshold_value: Threshold value for determining convergence.
-    - threshold_type: 'value' for direct threshold or 'percentage' for a percentage of total decrease.
+    - threshold_type: 'value' for direct threshold or 'percentage' for a percentage of total decrease/increase.
+    - threshold: Threshold value for determining convergence.
+    - stability_frames: The number of frames to check for stability after reaching the threshold.
     
     Returns:
     - Frame number at which the data reaches the specified threshold.
     """
 
+    def is_stable(index):
+        if direction == 'increasing':
+            condition = data[index] > target_value
+        else:  # decreasing
+            condition = data[index] < target_value
+
+        if condition:
+            return all(condition for d in data[index:index+stability_frames])
+        return False
+
+    # Determine initial direction
     if threshold_type == 'value':
-        for frame, value in zip(frames, data):
-            if value <= threshold_value:
-                return frame
+        target_value = threshold
+        direction = 'increasing' if data[0] < target_value else 'decreasing'
     elif threshold_type == 'percentage':
+        range_extent = np.max(data) - np.min(data)
+        target_value = np.min(data) + (range_extent * threshold_value / 100)
+        direction = 'increasing' if data[0] < target_value else 'decreasing'
 
-        # Check if the maximum values are below the activation threshold
-        if np.max(data) < activation_threshold:
-            return None
-
-        # Check if the minimum values are above the activation threshold
-        if np.min(data) > activation_threshold:
-            return None
-
-        # Check if the late-stage values are below the activation threshold
-        # late_start = int(len(data) * (1 - late_fraction))
-        # late_data = data[late_start:]
-        # if np.mean(late_data) > activation_threshold:
-        #     return None
-
-        # decrease = data[0] - data[-1]
-        decrease = np.max(data) - np.min(data)
-        target_value = data[0] - (decrease * threshold_value / 100)
-        for frame, value in zip(frames, data):
-            if value <= target_value:
-                return frame
+    for idx, (frame, value) in enumerate(zip(frames, data)):
+        if is_stable(idx):
+            return frame
     return None
 
 def bootstrap_mean_uncertainty(data, n_iterations=100):
@@ -267,41 +292,57 @@ def validate_input_data(args):
     return data
 
 def main(args):
-    file_paths = glob.glob(args.csv_path_pattern)
-    total_files = len(file_paths)
+    total_files = 0
     successful_activations = 0
     convergence_frames = []
 
-    for path in file_paths:
-        args.csv_path = path
-        try:
-            data = validate_input_data(args)
-        except Exception as e:
-            print(f"Error processing file {path}: {e}")
-            continue
+    for dir_pattern in args.csv_path_patterns:
+        file_paths = glob.glob(dir_pattern)
+        total_files += len(file_paths)
 
-        # Determine the test to perform
-        if args.test == 'ks':
-            results = cumulative_ks_test(data, args.late_fraction)
-            test_name = "Cumulative KS Test"
-            frames, p_values = zip(*results)
-            smoothed = exponential_smoothing(p_values)
-            convergence_frame = determine_convergence_ks(frames, p_values, args.threshold_value)
-            # print(convergence_frame)
-        elif args.test == 'box':
-            results = compute_outlier_percentage(data, args.late_fraction)
-            test_name = "Cumulative Box Test"
-            frames, percentages = zip(*results)
-            smoothed = exponential_smoothing(percentages)
-            convergence_frame = determine_convergence_box(frames, smoothed, args.threshold_value, args.box_check_method, args.activation_threshold)
-            # print(f"path: {path}, cf: {convergence_frame}")
-        
-        if not args.no_plotting:
-            plot_results(frames, percentages if args.test == 'box' else p_values, smoothed_data=smoothed, test_name=test_name)
+        for path in file_paths:
+            args.csv_path = path
+            try:
+                data = validate_input_data(args)
+            except Exception as e:
+                print(f"Error processing file {path}: {e}")
+                continue
 
-        if convergence_frame is not None:
-            successful_activations += 1
-            convergence_frames.append(convergence_frame)
+            # Determine the test to perform
+            if args.test == 'ks':
+                results = cumulative_ks_test(data, args.late_fraction)
+                test_name = "Cumulative KS Test"
+                frames, values = zip(*results)
+                smoothed = exponential_smoothing(values)
+                if not args.no_smoothing:
+                    convergence_frame = determine_convergence_ks(frames, smoothed, args.threshold)
+                else:
+                    convergence_frame = determine_convergence_ks(frames, values, args.threshold)
+            elif args.test == 'box':
+                results = compute_outlier_percentage(data, args.late_fraction)
+                test_name = "Cumulative Box Test"
+                frames, values = zip(*results)
+                smoothed = exponential_smoothing(values)
+                if not args.no_smoothing:
+                    convergence_frame = determine_convergence(frames, smoothed, args.box_check_method, args.threshold)
+                else:
+                    convergence_frame = determine_convergence(frames, values, args.box_check_method, args.threshold)
+            elif args.test == 'threshold':
+                results = compute_success_percentage(data)
+                test_name = "Threshold Test"
+                frames, values = zip(*results)
+                smoothed = exponential_smoothing(values)
+                if not args.no_smoothing:
+                    convergence_frame = determine_convergence(frames, smoothed, args.box_check_method, args.threshold)
+                else:
+                    convergence_frame = determine_convergence(frames, values, args.box_check_method, args.threshold)
+            
+            if not args.no_plotting:
+                plot_results(frames, values, smoothed_data=smoothed, test_name=test_name)
+
+            if convergence_frame is not None:
+                successful_activations += 1
+                convergence_frames.append(convergence_frame)
 
     if convergence_frames:
         average_convergence, uncertainty = bootstrap_mean_uncertainty(convergence_frames)
@@ -312,13 +353,14 @@ def main(args):
 # Argument parsing is moved to __main__
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Analyze data convergence using KS and Box tests.')
-    parser.add_argument('csv_path_pattern', type=str, help='Pattern for the path of the CSV files to be processed.')
+    parser.add_argument('csv_path_patterns', type=str, nargs='+', help='Pattern for the path of the CSV files to be processed.')
     parser.add_argument('--no-plotting', action='store_true', help='If set, no plots will be generated.')
-    parser.add_argument('--test', type=str, choices=['ks', 'box'], default='ks', help='Test to perform: "ks" for Kolmogorov-Smirnov test and "box" for Box test. Default is "ks".')
+    parser.add_argument('--no-smoothing', action='store_true', help='If set, no smoothing will be performed.')
+    parser.add_argument('--test', type=str, choices=['threshold', 'ks', 'box'], default='threshold', help='Test to perform: "ks" for Kolmogorov-Smirnov test and "box" for Box test. Default is "ks".')
     parser.add_argument('--late_fraction', type=float, default=0.1, help='Fraction of data considered as late-stage. Default is 0.1.')
-    parser.add_argument('--box_check_method', type=str, choices=['abs', 'percentage'], default='percentage', help='Method to use for Box test activation checking: "abs" for absolute value threshold and "percentage" for percentage threshold. Default is "percentage".')
-    parser.add_argument('--threshold_value', type=float, default=0.05, help='Threshold value for determining convergence in KS test. Default is 0.05.')
-    parser.add_argument('--activation_threshold', type=float, default=10, help='Threshold below which the late-stage values must fall to consider the system activated for Box test when using percentage threshold type. Default is 5%.')
+    parser.add_argument('--box_check_method', type=str, choices=['value', 'percentage'], default='value', help='Method to use for Box test activation checking: "abs" for absolute value threshold and "percentage" for percentage threshold. Default is "percentage".')
+    parser.add_argument('--threshold', type=float, default=90, help='Threshold value for determining convergence in KS test. Default is 0.05.')
+    parser.add_argument('--activation-threshold', type=float, default=10, help='Threshold below which the late-stage values must fall to consider the system activated for Box test when using percentage threshold type. Default is 5%.')
     
     args = parser.parse_args()
     main(args)
