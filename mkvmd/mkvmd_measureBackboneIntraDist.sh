@@ -61,8 +61,8 @@ for {set nn 0} {\$nn < \$total_frame} {incr nn} {
     set outf [open ${OUTPUT}.csv "a"]
 
     # These are resid of oxygens
-    # set backbone_residue {310 311 312 313 314 315 316 317 318 319 320} 
-    set backbone_residue {351 352 353 354 355 356 357 358 359 360 361} 
+    set backbone_residue {310 311 312 313 314 315 316 317 318 319 320} 
+    # set backbone_residue {351 352 353 354 355 356 357 358 359 360 361} 
     set output [measureBackboneIntraDist \$nn \$backbone_residue]
     
     foreach element \$output {puts -nonewline \$outf [format "%.2f," \$element]}

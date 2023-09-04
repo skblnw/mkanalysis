@@ -1,24 +1,27 @@
 #!/bin/bash
 # KevC @ 2019 @ OSU
-# Bash script to calculate distance between two residues
+# Improved Bash script to calculate distance between two residues
 
-[ $# -eq 0 ] && { echo "mkvmd> Usage: $0 [PDB] [TRJ] [PREFIX] [-i|-r] [Selection 1] [Selection 2]"; exit 1; }
+if [ "$#" -lt 3 ]; then
+    echo "mkvmd> Usage: $0 [PDB] [TRJ] [PREFIX] [INDEX_FILE]"
+    exit 1
+fi
 
 PDB="$1"
 TRJ="$2"
 PREFIX="$3"
-OPT="$4"
-SEL1="$5"
-SEL2="$6"
+INDEX_FILE="$4"
 
-files=("$PDB" "$TRJ")
+# Check for existence of input files
+files=("$PDB" "$TRJ" "$INDEX_FILE")
 for file in "${files[@]}"; do
     if [ ! -f "$file" ]; then
-        echo -e "$file \nStructure not found!"
+        echo -e "$file \nFile not found!"
         exit 1
     fi
 done
 
+# TCL proc and common setup
 cat > tcl << EOF
 proc calc_dist {nn sel_input1 sel_input2} {
     set sel1 [atomselect top "\$sel_input1" frame \$nn]
@@ -32,37 +35,26 @@ proc calc_dist {nn sel_input1 sel_input2} {
 set molnum [mol new $PDB waitfor all]
 mol addfile $TRJ waitfor all
 set total_frame [molinfo \$molnum get numframes]
-set outf [open "${PREFIX}" w]
 EOF
 
-case $OPT in
-    -r)
-        SELTEXT1="protein and resid $SEL1 and name CA"
-        SELTEXT2="protein and resid $SEL2 and name CA"
-        cat >> tcl <<EOF
-for {set nn 0} {\$nn < \$total_frame} {incr nn} {puts \$outf "\$nn [calc_dist \$nn \"$SELTEXT1\" \"$SELTEXT2]\""}
-close \$outf
-quit
-EOF
-    ;;
-    -i)
-        cat >> tcl <<EOF
-puts \$outf "# option: $OPT; selection 1: $SEL1; selection 2: $SEL2"
+# Process each line in the INDEX_FILE
+index_count=0
+while read -r IDX1 IDX2; do
+    let index_count=index_count+1
+    OUTFILE="${PREFIX}-d${index_count}"
+    cat >> tcl << EOF
+set outf [open "$OUTFILE" w]
+puts \$outf "# Index 1: $IDX1; Index 2: $IDX2"
 for {set nn 0} {\$nn < \$total_frame} {incr nn} {
-    set out_line ""
-    foreach {idx1} {$SEL1} {idx2} {$SEL2} {
-        lappend out_line [calc_dist \$nn "index \$idx1" "index \$idx2"]
-    }
-    puts \$outf "\$out_line"
+    puts \$outf "\$nn [calc_dist \$nn "index $IDX1" "index $IDX2"]"
 }
 close \$outf
+EOF
+done < "$INDEX_FILE"
+
+cat >> tcl << EOF
 quit
 EOF
-    ;;
-    *)    # unknown option
-        echo -e "Unknown option $OPT, must be either -i or -r"
-        exit 0
-    ;;
-esac
+
 vmd -dispdev text -e tcl
 rm tcl
