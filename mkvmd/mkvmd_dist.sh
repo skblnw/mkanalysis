@@ -3,14 +3,14 @@
 # Further Improved Bash script to calculate distance between two residues
 
 if [ "$#" -lt 3 ]; then
-    echo "mkvmd> Usage: $0 [PDB] [TRJ] [PREFIX] [INDEX_FILE]"
+    echo "mkvmd> Usage: $0 [PDB] [TRJ] [INDEX_FILE] [PREFIX]"
     exit 1
 fi
 
 PDB="$1"
 TRJ="$2"
-PREFIX="$3"
-INDEX_FILE="$4"
+INDEX_FILE="$3"
+PREFIX="$4"
 
 # Check for existence of input files
 files=("$PDB" "$TRJ" "$INDEX_FILE")
