@@ -1,6 +1,6 @@
 #!/bin/bash
 # KevC @ 2019 @ OSU
-# Improved Bash script to calculate distance between two residues
+# Further Improved Bash script to calculate distance between two residues
 
 if [ "$#" -lt 3 ]; then
     echo "mkvmd> Usage: $0 [PDB] [TRJ] [PREFIX] [INDEX_FILE]"
@@ -40,6 +40,9 @@ EOF
 # Process each line in the INDEX_FILE
 index_count=0
 while read -r IDX1 IDX2; do
+    # Skip lines starting with '#' or ';'
+    [[ "$IDX1" == \#* ]] || [[ "$IDX1" == \;* ]] && continue
+
     let index_count=index_count+1
     OUTFILE="${PREFIX}-d${index_count}"
     cat >> tcl << EOF
