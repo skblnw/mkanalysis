@@ -11,7 +11,7 @@ def visualize_matrices_from_pickle(pickle_file_path):
     for keyword, matrix in matrix_dict.items():
         # Plotting the heatmap for each matrix
         plt.figure(figsize=(10,8))
-        sns.heatmap(matrix, cmap='viridis', annot=False)  # 'annot=True' will annotate each cell with its value
+        sns.heatmap(matrix, cmap='inferno', annot=False)  # 'annot=True' will annotate each cell with its value
         plt.title(f'Heatmap for {keyword}')
         plt.show()
 

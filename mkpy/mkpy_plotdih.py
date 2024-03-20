@@ -19,6 +19,7 @@ def plot_dih_angles(csv_file, data_type="value", save_as_tiff=False, tiff_filena
     fig, ax = plt.subplots(1, 2, figsize=(15, 6))
 
     cmap = plt.get_cmap("tab20")
+    cmap = plt.get_cmap("Greys")
 
     # Determine the range based on data_type
     y_min, y_max = (0, 360) if data_type == "angle" else (data.min().min(), data.max().max())
@@ -28,7 +29,7 @@ def plot_dih_angles(csv_file, data_type="value", save_as_tiff=False, tiff_filena
         ax[0].plot(moving_average(data[col]), label=f"dih {idx}", color=cmap(idx))
 
     ax[0].set_xlim([0, len(data) * 1.2])  # Extend x-axis by 20%
-    ax[0].legend(loc='upper right')
+    # ax[0].legend(loc='upper right')
     ax[0].set_title('Profiles with Moving Average')
     ax[0].set_xlabel('Number of Frames')
     ax[0].set_ylabel('Value')
