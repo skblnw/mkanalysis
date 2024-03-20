@@ -2,8 +2,10 @@
 
 [ $# -ne 1 ] && { echo "mkhole> Usage: $0 <pdb>"; exit 1; }
 
-cat >> hole.inp << EOF
-coord $1
+bash ../mkvmdfix $1
+
+cat > hole.inp << EOF
+coord fixed.pdb
 radius radius
 cvect 0.0 0.0 1.0
 sphpdb out.sph
@@ -80,4 +82,11 @@ hole <hole.inp> out.txt
 egrep "mid-|sampled" out.txt | awk '{print $1" "$2}' > formatted.dat
 
 echo "> Done. Results are named formatted.dat."
-rm radius out.sph
+rm radius 
+
+sph_process -dotden 15 -color out.sph dotsurface.qpt
+
+qpt_conv
+
+sed -e "s/draw materials off/draw material AOChalky/g" \
+    -e "s/draw point {\([^}]*\)}.*/draw sphere {\1} radius .1/g" dotsurface.vmd_plot > out.vmd_plot
