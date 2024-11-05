@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import numpy as np
 import matplotlib as mpl
@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import cm
 plt.rcParams['axes.linewidth'] = 1
 plt.rcParams['figure.dpi'] = 150
-plt.rcParams['figure.figsize'] = [6,2]
+plt.rcParams['figure.figsize'] = [4,4]
 font = {'family': 'sans-serif',
         'sans-serif': 'Arial',
         'style': 'normal',
@@ -90,12 +90,16 @@ for ii, file in enumerate(cmd.input):
 # ax.set_ylim([0,8])
 # ax.set_yticks([0,1,2,3])
 
-# ax.set_ylim([-12,1])
-# ax.set_yticks([0,-2,-4,-6,-8,-10])
+# ax.set_ylim([0,21])
+# ax.set_yticks([0,10,20])
 
 ax.set_xlim(left=0)
-# ax.set_ylim([0,50])
+# ax.set_ylim([0,10])
 # ax.set_yticks([0,-2,-4,-6,-8,-10])
+
+def offset_formatter(x, pos):
+    return f'{int(x + 0)}'
+ax.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(offset_formatter))
 
 # plt.legend(['C-ter','N-ter'])
 # legend = plt.legend(loc='best')
